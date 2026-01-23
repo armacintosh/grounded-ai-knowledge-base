@@ -111,7 +111,7 @@ export default function App() {
                 institutions={institutions}
                 onFilterChange={setFilteredInstitutions}
               />
-              <div className="flex flex-1 mt-4 gap-6 h-[600px]">
+              <div className="flex flex-1 mt-4 gap-6 min-h-[75vh]">
                 <div className="w-[70%] relative overflow-hidden shadow-lg border border-slate-200">
                   <Map
                     institutions={filteredInstitutions}
@@ -132,15 +132,15 @@ export default function App() {
           </>
         ) : activeTab === 'applicants' ? (
           <>
-            <div className="bg-blue-50 border-b border-blue-100 p-4 rounded-none">
-              <div className="flex items-center gap-3 text-blue-800 max-w-screen-2xl mx-auto">
-                <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <div className="bg-slate-50 border-b border-slate-200 p-4 rounded-none">
+              <div className="flex items-center gap-3 text-slate-800 max-w-screen-2xl mx-auto">
+                <AlertCircle className="w-5 h-5 flex-shrink-0 text-sage-600" />
                 <p className="text-sm">
                   <span className="font-medium">Note:</span> This interface uses synthetic data for demonstration purposes. All student scores, demographics, and other personal information are simulated.
                 </p>
               </div>
             </div>
-            <div className="bg-gray-50 pt-4 flex-1 flex flex-col">
+            <div className="bg-white pt-4 flex-1 flex flex-col">
               <ApplicantList
                 applicants={applicants}
                 selectedApplicant={selectedApplicant}
@@ -154,7 +154,7 @@ export default function App() {
                     institutions={institutions}
                   />
                 )}
-                <div className="flex flex-1 gap-6 min-h-[500px] mb-6">
+                <div className="flex flex-1 gap-6 min-h-[75vh] mb-6">
                   <div className="w-[70%] relative overflow-hidden shadow-lg border border-slate-200">
                     <Map
                       institutions={selectedApplicant ? getApplicantInstitutions(selectedApplicant) : []}

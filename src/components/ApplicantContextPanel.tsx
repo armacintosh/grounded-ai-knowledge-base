@@ -138,17 +138,17 @@ export default function ApplicantContextPanel({
       icon: <School className="w-5 h-5" />,
       status: 'neutral',
       details: (
-        <div className="mt-3 space-y-1.5">
+        <div className="mt-4 space-y-1">
           {financialAid.schools.map((school, index) => (
             <div
               key={index}
-              className={`flex justify-between text-sm rounded px-2 py-1 ${school.isHigh
-                ? 'bg-gray-200 text-gray-800'
-                : 'bg-gray-100 text-gray-600'
+              className={`flex justify-between text-xs font-mono px-3 py-2 border-l-2 rounded-none transition-colors ${school.isHigh
+                ? 'bg-white border-sage-400 text-slate-800'
+                : 'bg-slate-50 border-slate-300 text-slate-500'
                 }`}
             >
               <span className="truncate flex-1 mr-2">{school.name}</span>
-              <span className="font-medium">{formatCurrency(school.aid)}</span>
+              <span className="font-bold">{formatCurrency(school.aid)}</span>
             </div>
           ))}
         </div>
@@ -159,34 +159,37 @@ export default function ApplicantContextPanel({
   const getStatusStyles = (status: Metric['status']) => {
     switch (status) {
       case 'positive':
-        return 'bg-green-50 border-green-200 text-green-700';
+        return 'bg-sage-50 border-sage-200 text-sage-800';
       case 'negative':
-        return 'bg-red-50 border-red-200 text-red-700';
+        return 'bg-red-50 border-red-200 text-red-800';
       case 'warning':
-        return 'bg-yellow-50 border-yellow-200 text-yellow-700';
+        return 'bg-amber-50 border-amber-200 text-amber-800';
       default:
-        return 'bg-gray-50 border-gray-200 text-gray-700';
+        return 'bg-slate-50 border-slate-200 text-slate-700';
     }
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-      <h2 className="text-xl font-semibold mb-4">{applicant.name} in Context</h2>
+    <div className="bg-white border-b border-slate-200 p-6 mb-6 rounded-none">
+      <h2 className="text-sm font-bold uppercase tracking-widest text-slate-500 mb-6 flex items-center gap-2">
+        <Users className="w-4 h-4" />
+        {applicant.name} in Context
+      </h2>
       <div className="grid grid-cols-2 gap-4">
         {metrics.map((metric, index) => (
           <div
             key={index}
-            className={`p-4 rounded-lg border ${getStatusStyles(metric.status)}`}
+            className={`p-4 rounded-none border ${getStatusStyles(metric.status)} transition-colors`}
           >
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-3 opacity-80">
               {metric.icon}
-              <span className="font-medium">{metric.label}</span>
+              <span className="font-medium text-xs uppercase tracking-wider">{metric.label}</span>
             </div>
-            <p className="text-lg font-semibold">
+            <p className="text-xl font-bold font-mono">
               {metric.value}
             </p>
             {metric.subtext && (
-              <p className="text-sm mt-1 opacity-80 whitespace-pre-line">
+              <p className="text-xs mt-2 opacity-80 whitespace-pre-line font-mono leading-relaxed">
                 {metric.subtext}
               </p>
             )}

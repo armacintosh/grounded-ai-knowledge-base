@@ -10,7 +10,7 @@ export class GeminiClient {
 
     constructor(apiKey: string) {
         this.genAI = new GoogleGenerativeAI(apiKey);
-        this.model = this.genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
+        this.model = this.genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
     }
 
     async initialize() {

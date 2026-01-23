@@ -48,29 +48,32 @@ export default function ApplicantList({
             key={applicant.applicant_id}
             onClick={() => onApplicantSelect(applicant)}
             className={`
-              flex-none w-64 p-4 rounded-lg transition-all
+              flex-none w-64 p-4 transition-all rounded-none text-left relative group
               ${selectedApplicant?.applicant_id === applicant.applicant_id
-                ? 'bg-blue-50 border-2 border-blue-500 shadow-md'
-                : 'bg-white border border-gray-200 hover:border-blue-300 shadow-sm'
+                ? 'bg-white border-2 border-sage-600 shadow-md ring-1 ring-sage-600'
+                : 'bg-white border border-slate-200 hover:border-sage-400 hover:shadow-sm'
               }
             `}
           >
             <div className="flex items-start justify-between mb-3">
-              <div className="flex-1">
-                <h3 className="font-semibold text-gray-900 truncate">
+              <div className="flex-1 min-w-0 pr-2">
+                <h3 className="font-bold text-slate-900 truncate font-sans text-sm">
                   {applicant.name}
                 </h3>
-                <p className="text-sm text-gray-500">
+                <p className="text-xs text-slate-500 mt-1 font-mono uppercase tracking-wide">
                   {applicant.applied_to.length} schools
                 </p>
               </div>
-              <div className="flex items-center gap-1 bg-blue-100 px-2 py-1 rounded">
-                <Brain className="w-4 h-4 text-blue-600" />
-                <span className="font-medium text-blue-600">
+              <div className={`flex items-center gap-1 px-2 py-1 ${selectedApplicant?.applicant_id === applicant.applicant_id ? 'bg-sage-50 text-sage-700' : 'bg-slate-50 text-slate-600'}`}>
+                <Brain className="w-3 h-3" />
+                <span className="font-bold text-xs font-mono">
                   {applicant.gpa_z.toFixed(2)}
                 </span>
               </div>
             </div>
+            {selectedApplicant?.applicant_id === applicant.applicant_id && (
+              <div className="absolute top-0 left-0 w-1 h-full bg-sage-600"></div>
+            )}
           </button>
         ))}
       </div>

@@ -28,7 +28,7 @@ export class GraphRAGClient {
   constructor(apiKey: string) {
     this.genAI = new GoogleGenerativeAI(apiKey);
     this.embeddingModel = this.genAI.getGenerativeModel({ model: "text-embedding-004" });
-    this.chatModel = this.genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
+    this.chatModel = this.genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
     this.nodeEmbeddings = {};
     // @ts-ignore
     this.nodeNames = [];
