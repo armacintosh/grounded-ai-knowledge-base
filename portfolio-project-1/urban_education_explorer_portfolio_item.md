@@ -5,8 +5,12 @@
 **Live Demo**: [https://public-data-graph-rag.netlify.app/](https://public-data-graph-rag.netlify.app/)
 
 
-### Challenge
-The Urban Institute maintains one of the most comprehensive datasets on educational institutions in the United States, including data from IPEDS (Integrated Postsecondary Education Data System) and other sources. However, this wealth of information is locked behind complex technical documentation and thousands of obscure variable codes (e.g., `cc_basic_2021`, `hhinc_home_zip_med`). Researchers and policymakers often struggle to identify the exact data points they need without extensive manual lookup, making it difficult to answer simple questions like "Which schools have the highest poverty rates in their home zip codes?" or "How do admission rates correlate with instruction costs?"
+### The Challenge
+The Urban Institute provides a massive repository of educational data, yet its complexity often hinders accessibility.
+*   **Extensive Data**: 3,000+ variables and 40+ endpoints from 25+ sources (IPEDS, College Scorecard).
+*   **Comprehensive Coverage**: Admissions, student outcomes, faculty, finance, safety, tax records, zip code, SES, and family income.
+
+The challenge is that it's hard for people to know how to find what they are looking for. Navigating thousands of obscure variable codes (e.g., `cc_basic_2021`) requires extensive manual lookup, making it difficult to extract actionable insights.
 
 ### Our Approach
 We built the **Urban Education Explorer**, an intelligent web application designed to bridge the gap between complex data repositories and human curiosity. The core of this solution is a specialized **GraphRAG (Graph Retrieval-Augmented Generation)** architecture designed specifically to "understand" the Urban Education Data Set.
@@ -30,6 +34,30 @@ We built the **Urban Education Explorer**, an intelligent web application design
 
 ![GraphRAG Chat Interface](/Users/alexandermacintosh/Documents/GitHub/prototypes/urban-education-explorer-w-graph-rag/portfolio-project-1/chat_interface.png)
 *Fig 3: The Chat interface uses GraphRAG to map natural language queries to specific database codes (shown in the "Graph Context" panel).*
+
+#### System Architecture
+
+```mermaid
+graph TD
+    User[User Query] --> Client[React Client]
+    
+    subgraph "GraphRAG Flow"
+    Client -->|1. Request Embedding| NetlifyEmbed[Netlify Function\n(Embedding)]
+    NetlifyEmbed <-->|Google GenAI SDK| GeminiEmbed[Gemini\nEmbedding Model]
+    
+    Client -->|2. Vector Search| LocalSearch[Local Vector Store\n(Cosine Similarity)]
+    LocalSearch <-->|Read| NodeData[(node_embeddings.json)]
+    
+    Client -->|3. Context Expansion| KG[Knowledge Graph\nLogic]
+    KG <-->|Lookups| StaticData[(node_names.txt)]
+    
+    Client -->|4. Generate Response| NetlifyGen[Netlify Function\n(Chat)]
+    NetlifyGen <-->|Prompt + Context| GeminiGen[Gemini\nFlash Lite]
+    end
+    
+    NetlifyGen -->|Final Response| Client
+```
+*Fig 4: The custom GraphRAG architecture combines serverless AI calls with client-side vector search for low-latency code retrieval.*
 
 
 ### Tech Stack
