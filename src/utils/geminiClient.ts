@@ -1,82 +1,62 @@
-import { GoogleGenerativeAI, GenerativeModel, ChatSession } from '@google/generative-ai';
+// GoogleGenerativeAI imports removed as we are now using fetch to proxy to Netlify Functions
 
 export class GeminiClient {
-    private genAI: GoogleGenerativeAI;
-    private model: GenerativeModel;
-    private chat: ChatSession | null = null;
-    private retryCount: number = 0;
-    private readonly maxRetries: number = 3;
-    private readonly baseDelay: number = 2000;
+    private chatHistory: { role: string, parts: { text: string }[] }[] = [];
 
-    constructor(apiKey: string) {
-        this.genAI = new GoogleGenerativeAI(apiKey);
-        this.model = this.genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+    constructor(_apiKey: string) {
+        // API key is no longer needed on the client, but keeping constructor signature for now
+        // to minimize changes in consumer code.
     }
 
     async initialize() {
-        this.chat = this.model.startChat({
-            history: [],
-            generationConfig: {
-                maxOutputTokens: 1000,
-            },
-        });
-        return { name: "Gemini Assistant" }; // Mocking assistant object
+        this.chatHistory = [];
+        return { name: "Gemini Assistant" };
     }
 
     async createThread() {
-        // Gemini chat session is already created in initialize or can be reset here
-        this.chat = this.model.startChat();
+        this.chatHistory = [];
         return { id: "gemini-thread" };
     }
 
-    // Method to match the previous AssistantClient signature roughly
     async ensureInitialized() {
-        if (!this.chat) {
-            await this.initialize();
-        }
-    }
-
-    private async exponentialBackoff(): Promise<void> {
-        const delay = this.baseDelay * Math.pow(2, this.retryCount);
-        await new Promise(resolve => setTimeout(resolve, delay));
-        this.retryCount++;
-    }
-
-    private resetRetryCount(): void {
-        this.retryCount = 0;
+        // No-op for proxy client
     }
 
     async *streamMessage(content: string, signal?: AbortSignal): AsyncGenerator<string, void, unknown> {
-        if (!this.chat) {
-            throw new Error('Chat session not initialized');
-        }
-
         try {
-            const result = await this.chat.sendMessageStream(content);
+            const response = await fetch('/.netlify/functions/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: content,
+                    history: this.chatHistory
+                }),
+                signal
+            });
 
-            for await (const chunk of result.stream) {
-                if (signal?.aborted) {
-                    throw new Error('Request cancelled');
-                }
-                const text = chunk.text();
-                yield text;
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || `Server error: ${response.status}`);
             }
+
+            const data = await response.json();
+            const text = data.text;
+
+            // Update local history
+            this.chatHistory.push({ role: 'user', parts: [{ text: content }] });
+            this.chatHistory.push({ role: 'model', parts: [{ text: text }] });
+
+            // Yield the full text (simulating stream for compatibility)
+            yield text;
 
         } catch (error) {
-            if (error instanceof Error) {
-                if (signal?.aborted) {
-                    throw new Error('Request cancelled');
-                }
-                if (this.retryCount < this.maxRetries) {
-                    console.warn(`Retrying request... Attempt ${this.retryCount + 1}`);
-                    await this.exponentialBackoff();
-                    yield* this.streamMessage(content, signal);
-                } else {
-                    this.resetRetryCount();
-                    throw error;
-                }
+            if (signal?.aborted) {
+                throw new Error('Request cancelled');
             }
-            throw new Error('An unexpected error occurred: ' + error);
+            console.error('Gemini Proxy Error:', error);
+            throw error;
         }
     }
 }
