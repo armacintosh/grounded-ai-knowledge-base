@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, X } from 'lucide-react';
 import { Institution } from '../types/institution';
 
@@ -7,27 +7,26 @@ interface SearchFilterPanelProps {
   onFilterChange: (filtered: Institution[]) => void;
 }
 
-export default function SearchFilterPanel({ institutions, onFilterChange }: SearchFilterPanelProps) {
-  const [searchTerm, setSearchTerm] = useState('');
+export default function SearchFilterPanel({ institutions, onFilterChange, searchTerm, onSearchChange }: SearchFilterPanelProps & { searchTerm: string; onSearchChange: (term: string) => void }) {
   const [admitRateFilter, setAdmitRateFilter] = useState('');
 
   useEffect(() => {
     const filtered = institutions.filter(inst => {
-      const matchesSearch = searchTerm === '' || 
+      const matchesSearch = searchTerm === '' ||
         inst.inst_name.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesAdmitRate = !admitRateFilter || (
-        admitRateFilter === 'selective' 
-          ? inst.admit_rate * 100 <= 30 
+        admitRateFilter === 'selective'
+          ? inst.admit_rate * 100 <= 30
           : inst.admit_rate * 100 > 30
       );
       return matchesSearch && matchesAdmitRate;
     });
-    
+
     onFilterChange(filtered);
   }, [searchTerm, admitRateFilter, institutions]);
 
   const clearSearch = () => {
-    setSearchTerm('');
+    onSearchChange('');
   };
 
   return (
@@ -37,7 +36,7 @@ export default function SearchFilterPanel({ institutions, onFilterChange }: Sear
           <input
             type="text"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search schools..."
             className="w-full pl-10 pr-10 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />

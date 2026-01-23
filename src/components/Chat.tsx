@@ -231,9 +231,9 @@ export default function Chat() {
 
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 bg-slate-50/30">
+    <div className="flex flex-col h-full bg-slate-50/30 overflow-hidden relative">
       {/* Control Bar */}
-      <div className="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between sticky top-0 z-10 shadow-sm">
+      <div className="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between shrink-0 shadow-sm z-10">
         <div className="flex items-center gap-3">
           <div className="bg-sage-50 p-1.5">
             <Bot className="w-4 h-4 text-sage-600" />
@@ -266,7 +266,7 @@ export default function Chat() {
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col max-w-5xl mx-auto w-full px-6 py-8 min-h-0">
+      <div className="flex-1 flex flex-col w-full max-w-5xl mx-auto min-h-0 relative">
         {error ? (
           <div className="h-full flex items-center justify-center">
             <div className="text-center bg-white p-12 border border-red-100 shadow-sm rounded-none">
@@ -283,9 +283,9 @@ export default function Chat() {
           </div>
         ) : (
           /* Messages Area */
-          <div className="flex-1 overflow-y-auto space-y-8 pr-4 custom-scrollbar">
+          <div className="flex-1 overflow-y-auto px-6 py-8 custom-scrollbar">
             {messages.length === 0 && (
-              <div className="flex flex-col items-center justify-center h-full text-center space-y-6 opacity-60">
+              <div className="flex flex-col items-center justify-center min-h-full text-center space-y-6 opacity-60">
                 <div className="border border-slate-200 p-6 bg-white">
                   <Bot className="w-8 h-8 text-sage-600 mb-4 mx-auto" />
                   <h3 className="text-lg font-light text-slate-900 mb-2">Research Assistant Active</h3>
@@ -311,53 +311,55 @@ export default function Chat() {
               </div>
             )}
 
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex flex-col ${message.isBot ? 'items-start' : 'items-end'}`}
-              >
-                <div className={`max-w-[85%] relative group ${message.isBot ? '' : ''}`}>
-                  {/* Label */}
-                  <div className={`mb-2 text-[10px] uppercase tracking-wider font-bold ${message.isBot ? 'text-sage-600' : 'text-slate-400 text-right'
-                    }`}>
-                    {message.isBot ? 'Gemini Assistant' : 'Researcher'}
-                  </div>
-
-                  {/* Card */}
-                  <div className={`p-6 shadow-sm rounded-none ${message.isBot
-                    ? 'bg-white border-l-4 border-sage-600 text-slate-800'
-                    : 'bg-slate-50 border-l-4 border-slate-900 text-slate-800'
-                    }`}>
-                    <div className="prose prose-sm prose-slate max-w-none font-light leading-relaxed whitespace-pre-wrap">
-                      {message.content}
-                      {message.status === 'typing' && (
-                        <span className="inline-block w-2 h-2 bg-sage-600 animate-pulse ml-1" />
-                      )}
+            <div className="space-y-8 pb-4">
+              {messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={`flex flex-col ${message.isBot ? 'items-start' : 'items-end'}`}
+                >
+                  <div className={`max-w-[85%] relative group ${message.isBot ? '' : ''}`}>
+                    {/* Label */}
+                    <div className={`mb-2 text-[10px] uppercase tracking-wider font-bold ${message.isBot ? 'text-sage-600' : 'text-slate-400 text-right'
+                      }`}>
+                      {message.isBot ? 'Gemini Assistant' : 'Researcher'}
                     </div>
 
-                    {message.status === 'failed' && (
-                      <div className="mt-4 pt-4 border-t border-red-100 flex items-center gap-2">
-                        <span className="text-xs text-red-500 font-mono uppercase">Emission Failed</span>
-                        <button
-                          onClick={() => regenerateResponse(message.id)}
-                          className="text-xs text-sage-600 underline hover:text-sage-800"
-                        >
-                          Retry
-                        </button>
+                    {/* Card */}
+                    <div className={`p-6 shadow-sm rounded-none ${message.isBot
+                      ? 'bg-white border-l-4 border-sage-600 text-slate-800'
+                      : 'bg-slate-50 border-l-4 border-slate-900 text-slate-800'
+                      }`}>
+                      <div className="prose prose-sm prose-slate max-w-none font-light leading-relaxed whitespace-pre-wrap">
+                        {message.content}
+                        {message.status === 'typing' && (
+                          <span className="inline-block w-2 h-2 bg-sage-600 animate-pulse ml-1" />
+                        )}
                       </div>
-                    )}
 
-                    {message.isBot && renderKnowledgeGraph(message)}
+                      {message.status === 'failed' && (
+                        <div className="mt-4 pt-4 border-t border-red-100 flex items-center gap-2">
+                          <span className="text-xs text-red-500 font-mono uppercase">Emission Failed</span>
+                          <button
+                            onClick={() => regenerateResponse(message.id)}
+                            className="text-xs text-sage-600 underline hover:text-sage-800"
+                          >
+                            Retry
+                          </button>
+                        </div>
+                      )}
+
+                      {message.isBot && renderKnowledgeGraph(message)}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
           </div>
         )}
 
         {/* Input Area */}
-        <div className="mt-8 pt-8 border-t border-slate-200">
+        <div className="shrink-0 px-6 py-6 border-t border-slate-200 bg-white/50 backdrop-blur-sm z-10 w-full">
           <form onSubmit={handleSubmit} className="relative group max-w-4xl mx-auto">
             <textarea
               ref={inputRef}
@@ -365,20 +367,20 @@ export default function Chat() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Ask about debt, region, or graduation rates..."
-              className="w-full bg-transparent border-t-0 border-x-0 border-b-2 border-slate-200 focus:border-sage-600 focus:ring-0 text-2xl font-light py-4 placeholder-slate-300 transition-all resize-none font-sans text-slate-800 rounded-none"
+              className="w-full bg-transparent border-t-0 border-x-0 border-b-2 border-slate-200 focus:border-sage-600 focus:ring-0 text-xl font-light py-3 pr-12 placeholder-slate-300 transition-all resize-none font-sans text-slate-800 rounded-none focus:bg-white/50"
               rows={1}
               disabled={isLoading}
             />
             <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-4">
               {isLoading ? (
-                <Loader2 className="w-6 h-6 text-sage-600 animate-spin" />
+                <Loader2 className="w-5 h-5 text-sage-600 animate-spin" />
               ) : (
                 <button
                   type="submit"
                   disabled={!input.trim()}
-                  className="bg-slate-900 text-white p-3 hover:bg-slate-700 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed rounded-none"
+                  className="bg-slate-900 text-white p-2 hover:bg-slate-700 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed rounded-none"
                 >
-                  <Send className="w-5 h-5" />
+                  <Send className="w-4 h-4" />
                 </button>
               )}
             </div>

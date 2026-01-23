@@ -14,6 +14,13 @@ interface MarkerLayerProps {
 function MarkerLayer({ institutions, onInstitutionSelect, onViewDetails }: MarkerLayerProps) {
   const map = useMap();
 
+  useEffect(() => {
+    if (institutions.length > 0) {
+      const bounds = L.latLngBounds(institutions.map(inst => [inst.latitude, inst.longitude]));
+      map.fitBounds(bounds, { padding: [50, 50] });
+    }
+  }, [institutions, map]);
+
 
 
   const formatPercent = (value: number | null): string => {

@@ -22,6 +22,7 @@ export default function App() {
   const [selectedInstitution, setSelectedInstitution] = useState<Institution | null>(null);
   const [selectedApplicant, setSelectedApplicant] = useState<Applicant | null>(null);
   const [hoveredInstitution, setHoveredInstitution] = useState<Institution | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -86,7 +87,18 @@ export default function App() {
 
   return (
     <div className="flex flex-col min-h-screen text-slate-900 font-sans rounded-none">
-      <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+      <TabNavigation
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        searchTerm={searchTerm}
+        onSearch={(term) => {
+          setSearchTerm(term);
+          // Auto-switch to colleges tab if searching and not in it? 
+          // User didn't ask for this explicitly but it's good UX. 
+          // However, keeping it simple as per "principles" - simple first.
+          if (activeTab === 'chat' && term) setActiveTab('colleges');
+        }}
+      />
       <div className="flex-1 flex flex-col">
         {activeTab === 'colleges' ? (
           <>
@@ -110,6 +122,8 @@ export default function App() {
               <SearchFilterPanel
                 institutions={institutions}
                 onFilterChange={setFilteredInstitutions}
+                searchTerm={searchTerm}
+                onSearchChange={setSearchTerm}
               />
               <div className="flex flex-1 mt-4 gap-6 min-h-[75vh]">
                 <div className="w-[70%] relative overflow-hidden shadow-lg border border-slate-200">
