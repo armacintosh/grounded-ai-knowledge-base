@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, ZoomControl, useMap } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { Institution } from '../types/institution';
@@ -14,14 +14,7 @@ interface MarkerLayerProps {
 function MarkerLayer({ institutions, onInstitutionSelect, onViewDetails }: MarkerLayerProps) {
   const map = useMap();
 
-  useEffect(() => {
-    if (institutions.length > 0) {
-      const bounds = L.latLngBounds(
-        institutions.map(inst => [inst.latitude, inst.longitude])
-      );
-      map.fitBounds(bounds, { padding: [50, 50] });
-    }
-  }, [institutions, map]);
+
 
   const formatPercent = (value: number | null): string => {
     if (value === null || isNaN(value)) return 'N/A';
@@ -52,7 +45,7 @@ function MarkerLayer({ institutions, onInstitutionSelect, onViewDetails }: Marke
             <div className="p-2">
               <h3 className="font-bold text-lg mb-1">{institution.inst_name}</h3>
               <p className="text-gray-600 text-sm mb-3">{institution.inst_alias}</p>
-              
+
               <div className="space-y-4">
                 <Section title="Admission Statistics">
                   <InfoRow label="Admission Rate" value={formatPercent(institution.admit_rate)} />
@@ -113,6 +106,7 @@ interface MapProps {
 
 export default function Map({ institutions, onInstitutionSelect, onViewDetails }: MapProps) {
   useEffect(() => {
+    // @ts-ignore
     delete L.Icon.Default.prototype._getIconUrl;
     L.Icon.Default.mergeOptions({
       iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -133,7 +127,7 @@ export default function Map({ institutions, onInstitutionSelect, onViewDetails }
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <ZoomControl position="bottomright" />
-      <MarkerLayer 
+      <MarkerLayer
         institutions={institutions}
         onInstitutionSelect={onInstitutionSelect}
         onViewDetails={(institution) => {

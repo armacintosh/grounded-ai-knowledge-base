@@ -19,6 +19,7 @@ export interface Institution {
   sum_average_amount: number;
   sum_total_amount: number;
   percent_of_students: number;
+  midincome_pct: number | null;
   bach_home_zip_pct: number | null;
   hhinc_home_zip_med: number | null;
   poverty_rate_home_zip: number | null;

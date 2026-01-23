@@ -288,6 +288,37 @@ export default function Chat() {
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {messages.length === 0 && (
+          <div className="flex flex-col items-center justify-center h-full text-center space-y-6">
+            <div className="bg-blue-50 p-4 rounded-full">
+              <Bot className="w-12 h-12 text-blue-500" />
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold text-gray-800">How can I help you today?</h3>
+              <p className="text-gray-500 mt-2">Ask me anything about the education data.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-2xl w-full px-4">
+              {[
+                "What are the admission rates for Ivy League schools?",
+                "Compare the cost of attendance between public vs private universities.",
+                "Which schools offer the best financial aid?",
+                "How does student debt vary by region?"
+              ].map((question, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setInput(question);
+                    // Optional: auto-submit
+                    // handleSubmit(new Event('submit') as any); 
+                  }}
+                  className="text-left p-3 text-sm text-gray-700 bg-white border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors rounded-none"
+                >
+                  {question}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
         {messages.map((message) => (
           <div
             key={message.id}
@@ -295,16 +326,16 @@ export default function Chat() {
           >
             <div className={`flex gap-3 max-w-[80%] ${message.isBot ? 'flex-row' : 'flex-row-reverse'
               }`}>
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+              <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-gray-100">
                 {message.isBot ? (
                   <Bot className="w-5 h-5 text-blue-500" />
                 ) : (
                   <User className="w-5 h-5 text-gray-500" />
                 )}
               </div>
-              <div className={`rounded-lg p-4 ${message.isBot
-                  ? 'bg-white border border-gray-200'
-                  : 'bg-blue-500 text-white'
+              <div className={`p-4 ${message.isBot
+                  ? 'bg-white border border-gray-200 text-gray-800'
+                  : 'bg-slate-800 text-white'
                 }`}>
                 <div className="whitespace-pre-wrap">
                   {message.content}
@@ -342,7 +373,7 @@ export default function Chat() {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Type your message..."
-            className="flex-1 resize-none rounded-lg border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="flex-1 resize-none rounded-none border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             rows={1}
             disabled={isLoading}
           />
@@ -351,7 +382,7 @@ export default function Chat() {
               <button
                 type="button"
                 onClick={cancelRequest}
-                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+                className="bg-red-500 text-white px-4 py-2 rounded-none hover:bg-red-600"
               >
                 <XCircle className="w-5 h-5" />
               </button>
@@ -359,7 +390,7 @@ export default function Chat() {
             <button
               type="submit"
               disabled={isLoading || !input.trim()}
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="bg-blue-500 text-white px-4 py-2 rounded-none hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {isLoading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
