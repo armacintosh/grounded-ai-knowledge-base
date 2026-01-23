@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,8 +8,11 @@
 @layer base {
   body {
     @apply bg-slate-100 text-slate-900 font-sans;
+    background-color: #E1E9EA;
+    background-image: radial-gradient(#d1d5db 0.5px, transparent 0.5px);
+    background-size: 40px 40px;
   }
-  
+
   /* Strict enforcement of sharp corners */
   * {
     @apply rounded-none !important;
@@ -23,13 +29,15 @@
 .marker-cluster-small,
 .marker-cluster-medium,
 .marker-cluster-large {
-  background-color: rgba(89, 126, 109, 0.6); /* Sage-600 with opacity */
+  background-color: rgba(89, 126, 109, 0.6);
+  /* Sage-600 with opacity */
 }
 
 .marker-cluster-small div,
 .marker-cluster-medium div,
 .marker-cluster-large div {
-  background-color: rgba(89, 126, 109, 0.9); /* Sage-600 with opacity */
+  background-color: rgba(89, 126, 109, 0.9);
+  /* Sage-600 with opacity */
 }
 
 .marker-cluster {

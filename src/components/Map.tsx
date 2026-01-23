@@ -41,10 +41,10 @@ function MarkerLayer({ institutions, onInstitutionSelect, onViewDetails }: Marke
             click: () => onInstitutionSelect(institution),
           }}
         >
-          <Popup className="custom-popup" maxWidth={400} autoPan={false}>
-            <div className="p-2">
-              <h3 className="font-bold text-lg mb-1">{institution.inst_name}</h3>
-              <p className="text-gray-600 text-sm mb-3">{institution.inst_alias}</p>
+          <Popup className="custom-popup !rounded-none" maxWidth={400} autoPan={false}>
+            <div className="p-2 font-sans">
+              <h3 className="font-bold text-lg mb-1 text-slate-900">{institution.inst_name}</h3>
+              <p className="text-slate-500 text-sm mb-3">{institution.inst_alias}</p>
 
               <div className="space-y-4">
                 <Section title="Admission Statistics">
@@ -68,7 +68,7 @@ function MarkerLayer({ institutions, onInstitutionSelect, onViewDetails }: Marke
                   e.stopPropagation();
                   onViewDetails(institution);
                 }}
-                className="mt-4 w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors text-sm"
+                className="mt-4 w-full bg-sage-600 text-white px-4 py-2 hover:bg-sage-400 transition-colors text-sm font-bold uppercase tracking-wider"
               >
                 View Full Details
               </button>
@@ -119,12 +119,13 @@ export default function Map({ institutions, onInstitutionSelect, onViewDetails }
     <MapContainer
       center={[39.8283, -98.5795]}
       zoom={4}
-      className="h-full w-full"
+      className="h-full w-full grayscale contrast-110 brightness-90 relative z-0"
       zoomControl={false}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        className="map-tiles"
       />
       <ZoomControl position="bottomright" />
       <MarkerLayer

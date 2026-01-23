@@ -1,0 +1,888 @@
+<!-- Style Examples -->
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Applicant Analysis Dashboard - GlassBox Academic</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#2F3E46", // Deep Slate
+                        "background-light": "#F0F4F5", // Arctic Mist
+                        "background-dark": "#1A1D1E",
+                        "sage-leaf": "#84A59D",
+                        "willow-green": "#A5B49D",
+                        "deep-slate": "#2F3E46",
+                        "glass-border": "rgba(47, 62, 70, 0.15)"
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                        mono: ["JetBrains Mono", "monospace"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0px", // Strictly no rounded corners
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .manuscript-card {
+            border: 1px solid rgba(47, 62, 70, 0.2);
+            background: white;
+            transition: all 0.2s ease;
+        }
+
+        .manuscript-card:hover {
+            border-color: #84A59D;
+        }
+
+        .active-card {
+            border-left: 4px solid #2F3E46;
+            background: #F8FAFA;
+        }
+
+        .grayscale-map {
+            filter: grayscale(100%) contrast(1.1) brightness(0.9);
+        }
+
+        .metric-label {
+            color: #84A59D;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-deep-slate dark:text-gray-200 min-h-screen">
+    <nav
+        class="border-b border-glass-border bg-white dark:bg-black px-6 py-3 flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center space-x-8">
+            <div class="font-mono font-bold text-lg tracking-tighter flex items-center">
+                <span class="material-icons mr-2 text-sage-leaf">account_balance</span>
+                GLASSBOX <span class="text-sage-leaf">ACADEMIC</span>
+            </div>
+            <div class="flex space-x-6 text-sm font-medium">
+                <a class="text-gray-400 hover:text-deep-slate transition-colors" href="#">COLLEGES</a>
+                <a class="text-deep-slate border-b-2 border-deep-slate pb-4 -mb-[17px] dark:text-white"
+                    href="#">APPLICANTS</a>
+                <a class="text-gray-400 hover:text-deep-slate transition-colors" href="#">CHAT</a>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4 text-sm font-mono">
+            <span class="text-sage-leaf uppercase">Status: Connected</span>
+            <div class="w-2 h-2 bg-sage-leaf animate-pulse"></div>
+        </div>
+    </nav>
+    <div
+        class="bg-deep-slate text-white px-6 py-2 text-[10px] uppercase tracking-widest flex items-center justify-between">
+        <span>Synthetic Data Environment // Manuscript Build v2.0.4</span>
+        <span class="opacity-60 font-mono">Knowledge Graph RAG Active</span>
+    </div>
+    <main class="p-6 space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            <div class="manuscript-card p-3 dark:bg-gray-900">
+                <div class="metric-label font-bold">Applicant</div>
+                <div class="text-sm font-semibold truncate mb-1">Brandon Davis</div>
+                <div class="flex justify-between items-end">
+                    <span class="text-[10px] text-gray-500 font-mono">7 SCHOOLS</span>
+                    <span class="font-mono text-xs bg-willow-green/20 px-1 py-0.5 text-deep-slate">-0.48</span>
+                </div>
+            </div>
+            <div class="manuscript-card p-3 dark:bg-gray-900">
+                <div class="metric-label font-bold">Applicant</div>
+                <div class="text-sm font-semibold truncate mb-1">Courtney Anderson</div>
+                <div class="flex justify-between items-end">
+                    <span class="text-[10px] text-gray-500 font-mono">5 SCHOOLS</span>
+                    <span class="font-mono text-xs bg-willow-green/20 px-1 py-0.5 text-deep-slate">-0.32</span>
+                </div>
+            </div>
+            <div class="manuscript-card active-card p-3 dark:bg-gray-800 border-deep-slate">
+                <div class="metric-label font-bold text-deep-slate">Selected</div>
+                <div class="text-sm font-bold truncate mb-1">Donna Hall</div>
+                <div class="flex justify-between items-end">
+                    <span class="text-[10px] text-gray-500 font-mono">8 SCHOOLS</span>
+                    <span class="font-mono text-xs bg-deep-slate text-white px-1 py-0.5">-2.11</span>
+                </div>
+            </div>
+            <div class="manuscript-card p-3 dark:bg-gray-900">
+                <div class="metric-label font-bold">Applicant</div>
+                <div class="text-sm font-semibold truncate mb-1">Kenneth Diaz</div>
+                <div class="flex justify-between items-end">
+                    <span class="text-[10px] text-gray-500 font-mono">1 SCHOOLS</span>
+                    <span class="font-mono text-xs bg-willow-green/20 px-1 py-0.5 text-deep-slate">+0.17</span>
+                </div>
+            </div>
+            <div class="manuscript-card p-3 dark:bg-gray-900">
+                <div class="metric-label font-bold">Applicant</div>
+                <div class="text-sm font-semibold truncate mb-1">Gabriel Wilson</div>
+                <div class="flex justify-between items-end">
+                    <span class="text-[10px] text-gray-500 font-mono">2 SCHOOLS</span>
+                    <span class="font-mono text-xs bg-willow-green/20 px-1 py-0.5 text-deep-slate">-2.28</span>
+                </div>
+            </div>
+            <div class="manuscript-card p-3 dark:bg-gray-900">
+                <div class="metric-label font-bold">Applicant</div>
+                <div class="text-sm font-semibold truncate mb-1">Timothy Mills</div>
+                <div class="flex justify-between items-end">
+                    <span class="text-[10px] text-gray-500 font-mono">1 SCHOOLS</span>
+                    <span class="font-mono text-xs bg-willow-green/20 px-1 py-0.5 text-deep-slate">+2.26</span>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-baseline space-x-3 border-b border-glass-border pb-2">
+            <h2 class="text-2xl font-light tracking-tight">Donna Hall <span class="text-gray-400">in Context</span></h2>
+            <span class="font-mono text-[10px] bg-gray-200 dark:bg-gray-800 px-2 py-0.5">UID: 2948-DH</span>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="border border-glass-border bg-white dark:bg-gray-900 p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center space-x-2 mb-6">
+                        <span class="material-icons text-sage-leaf text-sm">analytics</span>
+                        <h3 class="text-xs font-bold uppercase tracking-widest text-deep-slate dark:text-white">
+                            Socioeconomic Context</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-xs text-gray-500 mb-1">High School Poverty Threshold</p>
+                            <p class="text-xl font-light">Above Threshold <span
+                                    class="text-sage-leaf font-mono ml-2">19.6%</span></p>
+                        </div>
+                        <p class="text-sm text-gray-500 leading-relaxed max-w-md italic">
+                            Applicant was not among the 19.6% from their high school in poverty. Peer group alignment
+                            within top 20th percentile.
+                        </p>
+                    </div>
+                </div>
+                <div class="mt-8 pt-4 border-t border-dotted border-gray-200 flex space-x-8">
+                    <div>
+                        <span class="metric-label block">GPA Z-Score</span>
+                        <span class="font-mono text-lg">-2.11</span>
+                    </div>
+                    <div>
+                        <span class="metric-label block">Household Income</span>
+                        <span class="font-mono text-lg">$50k - $75k</span>
+                    </div>
+                </div>
+            </div>
+            <div class="border border-glass-border bg-white dark:bg-gray-900 p-6">
+                <div class="flex items-center space-x-2 mb-6">
+                    <span class="material-icons text-sage-leaf text-sm">savings</span>
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-deep-slate dark:text-white">Financial
+                        Aid Opportunity</h3>
+                </div>
+                <div class="space-y-1">
+                    <div
+                        class="flex justify-between items-center bg-background-light dark:bg-gray-800 p-2 border-l-2 border-sage-leaf">
+                        <span class="text-xs font-medium">Tulane University of Louisiana</span>
+                        <span class="font-mono text-xs">$41,733</span>
+                    </div>
+                    <div class="flex justify-between items-center p-2 border-b border-gray-100 dark:border-gray-800">
+                        <span class="text-xs">Seton Hall University</span>
+                        <span class="font-mono text-xs">$39,820</span>
+                    </div>
+                    <div class="flex justify-between items-center p-2 border-b border-gray-100 dark:border-gray-800">
+                        <span class="text-xs">University of New Haven</span>
+                        <span class="font-mono text-xs">$36,337</span>
+                    </div>
+                    <div class="flex justify-between items-center p-2 border-b border-gray-100 dark:border-gray-800">
+                        <span class="text-xs">University of Virginia-Main Campus</span>
+                        <span class="font-mono text-xs">$34,857</span>
+                    </div>
+                    <div class="flex justify-between items-center p-2 border-b border-gray-100 dark:border-gray-800">
+                        <span class="text-xs">New England Institute of Technology</span>
+                        <span class="font-mono text-xs">$28,894</span>
+                    </div>
+                    <div class="flex justify-between items-center p-2 border-b border-gray-100 dark:border-gray-800">
+                        <span class="text-xs">Sul Ross State University</span>
+                        <span class="font-mono text-xs">$20,132</span>
+                    </div>
+                </div>
+                <div class="mt-4 text-[10px] text-gray-400 text-right">
+                    * Estimated Aid based on 2023 Academic Cycle
+                </div>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div
+                class="lg:col-span-2 border border-glass-border bg-white dark:bg-gray-900 overflow-hidden h-[300px] relative">
+                <div class="absolute top-4 left-4 z-10 bg-white/80 backdrop-blur-sm p-2 border border-glass-border">
+                    <span class="text-[10px] font-bold uppercase tracking-widest">Geographic Distribution</span>
+                </div>
+                <img alt="Grayscale world map pattern" class="grayscale-map w-full h-full object-cover opacity-50"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXtpPOYrjR8-T818AUGLP91hiuu4d07fPNvrcrsHxJW-ECsdV7fOz_5Cd4xwtppkbSqzBwvvoLPI6501T4R9SdMr_vVV-mEWOLphSRoHpHxBfhFOEciyMyIWQyAroPAjiSMaOVEZOzbpjHTJfWKN0e7VQ3UnDgugsoST8NrINGt5_WGTgn8Bw5r2yjZTt5Ny-HzSitOMfhye-9PNVsxFLuwRIU7UcFyNJbT992jssGfIJve8PXXHB0vIbU32kkKOM9wJH6eNRbkCA" />
+                <div class="absolute top-1/2 left-1/3 w-2 h-2 bg-deep-slate"></div>
+                <div class="absolute top-1/4 right-1/4 w-2 h-2 bg-sage-leaf"></div>
+                <div class="absolute bottom-1/3 left-1/2 w-2 h-2 bg-deep-slate"></div>
+                <div class="absolute bottom-4 right-4 flex flex-col space-y-1">
+                    <button
+                        class="bg-white border border-glass-border w-8 h-8 flex items-center justify-center hover:bg-gray-50">+</button>
+                    <button
+                        class="bg-white border border-glass-border w-8 h-8 flex items-center justify-center hover:bg-gray-50">-</button>
+                </div>
+            </div>
+            <div class="border border-glass-border bg-white dark:bg-gray-900 p-6">
+                <div class="flex items-center space-x-2 mb-6">
+                    <span class="material-icons text-sage-leaf text-sm">person_outline</span>
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-deep-slate dark:text-white">Applicant
+                        Metadata</h3>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <span class="metric-label block mb-2">Academic Performance</span>
+                        <div class="flex justify-between items-center border-b border-dotted border-gray-200 pb-2">
+                            <span class="text-sm">GPA (Standardized)</span>
+                            <span class="font-mono text-sm">-2.11</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-dotted border-gray-200 py-2">
+                            <span class="text-sm">SAT Percentile</span>
+                            <span class="font-mono text-sm">62%</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="metric-label block mb-2">Family Background</span>
+                        <div class="flex justify-between items-center border-b border-dotted border-gray-200 pb-2">
+                            <span class="text-sm">Parent Education</span>
+                            <span class="font-mono text-sm">Bachelors</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-dotted border-gray-200 py-2">
+                            <span class="text-sm">First Gen Student</span>
+                            <span class="font-mono text-sm">No</span>
+                        </div>
+                    </div>
+                    <div class="pt-4">
+                        <button
+                            class="w-full border border-deep-slate py-2 text-xs font-bold uppercase tracking-widest hover:bg-deep-slate hover:text-white transition-all">
+                            Export Full Analysis (CSV)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="p-6 border-t border-glass-border text-center">
+        <p class="text-[10px] text-gray-400 font-mono tracking-widest uppercase">
+            © 2024 Glassbox Systems // Urban Institute Dataset Integration // Variant 2 of 3
+        </p>
+    </footer>
+
+</body>
+
+</html>
+
+<!-- AI Researcher Assistant Chat -->
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AI Researcher Assistant Chat</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#1E293B", // Deep Slate
+                        "sage-leaf": "#8BA888",
+                        "background-light": "#F8FAFC",
+                        "background-dark": "#0F172A",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                        sans: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "4px",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glass-panel {
+            backdrop-filter: blur(8px);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .dark .glass-panel {
+            background-color: rgba(15, 23, 42, 0.8);
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-200 min-h-screen flex flex-col">
+    <header class="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <nav class="flex items-center space-x-12 h-16">
+                <a class="flex items-center space-x-2 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white transition-colors py-5 border-b-2 border-transparent"
+                    href="#">
+                    <span class="material-icons-outlined text-xl">account_balance</span>
+                    <span class="font-medium">Colleges</span>
+                </a>
+                <a class="flex items-center space-x-2 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white transition-colors py-5 border-b-2 border-transparent"
+                    href="#">
+                    <span class="material-icons-outlined text-xl">people_alt</span>
+                    <span class="font-medium">Applicants</span>
+                </a>
+                <a class="flex items-center space-x-2 text-primary dark:text-white py-5 border-b-4 border-primary dark:border-slate-400"
+                    href="#">
+                    <span class="material-icons-outlined text-xl">chat_bubble_outline</span>
+                    <span class="font-medium">Chat</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+    <div class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 py-3 px-6">
+        <div class="max-w-7xl mx-auto flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+            <div class="flex items-center space-x-2">
+                <span class="material-icons-outlined text-sm text-primary">auto_awesome</span>
+                <span>The chat is powered by <strong class="font-semibold">Gemini</strong> and a Custom GPT using the <a
+                        class="underline hover:text-primary" href="#">URBAN Institute Education Data</a>.</span>
+            </div>
+            <div class="flex items-center space-x-6">
+                <div class="flex items-center space-x-1">
+                    <span class="material-icons-outlined text-sm">visibility</span>
+                    <span>Knowledge Graph</span>
+                </div>
+                <div class="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400">
+                    <span class="material-icons-outlined text-sm">wifi</span>
+                    <span class="font-medium">Connected</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <main class="flex-grow overflow-y-auto px-6 py-12">
+        <div class="max-w-4xl mx-auto space-y-10">
+            <div class="flex flex-col items-end space-y-2">
+                <div
+                    class="bg-primary dark:bg-slate-800 text-white p-6 border-l-4 border-slate-400 max-w-[85%] shadow-sm">
+                    <p class="text-lg leading-relaxed font-light">
+                        How does student debt vary by region?
+                    </p>
+                </div>
+                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold px-2">Researcher</span>
+            </div>
+            <div class="flex flex-col items-start space-y-2">
+                <div
+                    class="bg-white dark:bg-slate-900 border-l-4 border-sage-leaf p-8 shadow-sm prose prose-slate dark:prose-invert max-w-full">
+                    <div class="flex items-center space-x-3 mb-6 text-slate-400">
+                        <span class="material-icons-outlined text-sage-leaf">smart_toy</span>
+                        <span class="text-xs uppercase tracking-widest font-bold">Gemini Assistant</span>
+                    </div>
+                    <p class="text-lg font-light leading-relaxed">
+                        Student debt in the United States is not distributed evenly. There are significant geographical
+                        variations driven by state funding for higher education, the concentration of private versus
+                        public institutions, the local cost of living, and state-level financial aid policies.
+                    </p>
+                    <p class="text-lg font-light leading-relaxed">
+                        Here is a breakdown of how student debt varies by region and the factors driving those
+                        differences.
+                    </p>
+                    <div class="my-8 border-t border-slate-100 dark:border-slate-800"></div>
+                    <h3 class="text-xl font-medium mb-4 flex items-center">
+                        <span class="text-sage-leaf mr-2">1.</span> The Northeast (Highest Debt)
+                    </h3>
+                    <p class="text-slate-600 dark:text-slate-400">
+                        The Northeast, particularly New England and the Mid-Atlantic, consistently ranks as the region
+                        with the highest average student debt.
+                    </p>
+                    <ul class="space-y-4 mt-6 list-none pl-0">
+                        <li class="flex items-start">
+                            <span class="text-sage-leaf mr-3 font-bold">•</span>
+                            <span><strong>Key States:</strong> New Hampshire, Pennsylvania, Connecticut, and Rhode
+                                Island often top the list, with average debt per borrower frequently exceeding
+                                <strong>$35,000 to $39,000</strong>.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-sage-leaf mr-3 font-bold">•</span>
+                            <div>
+                                <strong>Why it's high:</strong>
+                                <ul
+                                    class="mt-2 space-y-2 list-none pl-6 border-l border-slate-100 dark:border-slate-800">
+                                    <li class="flex items-start">
+                                        <span class="text-slate-300 mr-2">—</span>
+                                        <span><strong>Concentration of Private Colleges:</strong> This region has a high
+                                            density of older, prestigious private non-profit universities, which
+                                            generally have higher tuition than public schools.</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-slate-300 mr-2">—</span>
+                                        <span><strong>Low State Funding:</strong> States like New Hampshire and
+                                            Pennsylvania historically provide some of the lowest levels of state support
+                                            for higher education.</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold px-2">Knowledge Base
+                    Response • Just Now</span>
+            </div>
+        </div>
+    </main>
+    <footer class="bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 py-10 px-6">
+        <div class="max-w-4xl mx-auto relative group">
+            <input
+                class="w-full bg-transparent border-t-0 border-x-0 border-b-2 border-primary dark:border-slate-700 focus:ring-0 focus:border-sage-leaf dark:focus:border-sage-leaf text-2xl font-light py-4 placeholder-slate-300 transition-all"
+                placeholder="Ask about debt, region, or graduation rates..." type="text" />
+            <div class="absolute right-0 top-1/2 -translate-y-1/2 flex items-center space-x-4">
+                <button class="text-slate-400 hover:text-primary transition-colors">
+                    <span class="material-icons-outlined">attach_file</span>
+                </button>
+                <button
+                    class="bg-primary text-white p-2 rounded-full hover:bg-slate-700 transition-colors shadow-lg shadow-primary/20">
+                    <span class="material-icons-outlined">arrow_upward</span>
+                </button>
+            </div>
+        </div>
+        <div class="max-w-4xl mx-auto mt-4">
+            <div class="flex items-center space-x-3 overflow-x-auto pb-2 scrollbar-hide">
+                <button
+                    class="whitespace-nowrap px-4 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 text-xs text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Compare
+                    tuition in California</button>
+                <button
+                    class="whitespace-nowrap px-4 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 text-xs text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Average
+                    grant aid in NY</button>
+                <button
+                    class="whitespace-nowrap px-4 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 text-xs text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Top
+                    graduation rates 2023</button>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>
+
+<!-- Academic College Explorer -->
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Academic College Explorer - GlassBox Style</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#4F5D53", // Sage Leaf
+                        "sage-600": "#4F5D53",
+                        "background-light": "#F8F9FA",
+                        "background-dark": "#121416",
+                        "slate-custom": "#2D3436", // Deep Slate
+                        "border-academic": "#E1E4E8",
+                        "arctic-mist": "#F1F5F9", // slate-100
+                        "pale-ocean": "#E0F2FE", // subtle blue
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                        mono: ["JetBrains Mono", "monospace"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0px",
+                    },
+                },
+            },
+        };
+    </script>
+    <style type="text/tailwindcss">
+        body {
+            background-image: radial-gradient(#d1d5db 0.5px, transparent 0.5px);
+            background-size: 40px 40px;
+        }
+        .dark body {
+            background-image: radial-gradient(#2d3436 0.5px, transparent 0.5px);
+        }
+        .academic-map-theme {
+            background-color: #E0F2FE;}
+        .academic-map-theme img {filter: sepia(20%) brightness(1.1) contrast(0.9);
+            mix-blend-mode: multiply;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+        }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-slate-custom dark:text-gray-200 font-display min-h-screen">
+    <nav class="border-b border-border-academic dark:border-gray-800 bg-white dark:bg-zinc-900 sticky top-0 z-50">
+        <div class="max-w-[1600px] mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-8">
+                <h1 class="font-mono text-sm font-bold tracking-tighter uppercase flex items-center">
+                    <span class="material-symbols-outlined text-primary mr-2">account_balance</span>
+                    Academic Explorer <span class="ml-2 font-normal opacity-50">v1.0.4</span>
+                </h1>
+                <div class="flex space-x-1">
+                    <a class="px-4 py-2 text-sm font-medium border-b-2 border-primary text-primary"
+                        href="#">Colleges</a>
+                    <a class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-primary transition-colors"
+                        href="#">Applicants</a>
+                    <a class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-primary transition-colors"
+                        href="#">Analysis</a>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <span
+                        class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-400 text-[18px]">search</span>
+                    <input
+                        class="pl-10 pr-4 py-1.5 text-xs font-mono bg-gray-50 dark:bg-zinc-800 border-border-academic dark:border-gray-700 focus:ring-primary focus:border-primary w-64"
+                        placeholder="QUERY DATABASE..." type="text" />
+                </div>
+                <button class="p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
+                    onclick="document.documentElement.classList.toggle('dark')">
+                    <span class="material-symbols-outlined text-[20px]">dark_mode</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    <main class="max-w-[1600px] mx-auto p-6 space-y-6">
+        <div class="bg-primary/5 border border-primary/20 p-3 flex items-center space-x-3 text-xs font-mono">
+            <span class="material-symbols-outlined text-primary text-[16px]">info</span>
+            <span class="uppercase tracking-wider">Source: URBAN Institute Education Data Portal | High-fidelity
+                synthetic dataset active.</span>
+        </div>
+        <div class="grid grid-cols-12 gap-6 h-[520px]">
+            <div
+                class="col-span-8 bg-white dark:bg-zinc-900 border border-border-academic dark:border-gray-800 relative overflow-hidden flex flex-col">
+                <div class="p-4 border-b border-border-academic dark:border-gray-800 flex justify-between items-center">
+                    <h2 class="font-mono text-xs font-bold uppercase tracking-widest flex items-center">
+                        <span class="w-2 h-2 bg-primary mr-2"></span>
+                        Geographic Distribution Hub
+                    </h2>
+                    <div class="flex space-x-2">
+                        <div
+                            class="px-3 py-1 bg-gray-100 dark:bg-zinc-800 text-[10px] font-mono border border-border-academic dark:border-gray-700">
+                            COORD: 18.2208° N, 66.5901° W</div>
+                    </div>
+                </div>
+                <div class="flex-grow relative bg-pale-ocean dark:bg-zinc-950 academic-map-theme overflow-hidden">
+                    <img alt="Map texture" class="w-full h-full object-cover opacity-80"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBw06tfNtojQqQ2aJgawNL9HLsOQg7sxNW2n9gQNxlsPQSelFuvWzXSU_Wp_FCPW1nzHgjVnlKmncolIGhi7uQMRQiELJQ01-EYCiaKwDlf7c5iykCGYXZXQtjwMceo_GRH3-QkT6v2Gqk-pcMacD35XbYEir91HxbVuFQDy8jbkV_mOT_G6UG4G-9038ktT3FHYNJJxBKn4bLAtYhs2TZw9qsmbKcNCmB7OZ_fVRHwHmoUglNTn5n26o9XOh_zyutdFAMmn94SiU" />
+                    <div
+                        class="absolute top-1/4 left-1/3 bg-sage-600 text-white font-mono text-[10px] px-2 py-1 border border-white/40 shadow-sm">
+                        182</div>
+                    <div
+                        class="absolute top-1/2 left-1/4 bg-sage-600 text-white font-mono text-[10px] px-2 py-1 border border-white/40 shadow-sm">
+                        42</div>
+                    <div
+                        class="absolute top-1/3 right-1/4 bg-sage-600 text-white font-mono text-[10px] px-2 py-1 border border-white/40 shadow-sm">
+                        89</div>
+                    <div
+                        class="absolute bottom-1/4 left-1/2 bg-sage-600 text-white font-mono text-[10px] px-2 py-1 border border-white/40 shadow-sm">
+                        12</div>
+                    <div class="absolute top-1/2 right-1/3 group">
+                        <div class="relative">
+                            <span class="material-symbols-outlined text-slate-custom drop-shadow-md scale-150"
+                                style="font-variation-settings: 'FILL' 1">location_on</span>
+                            <div
+                                class="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-custom text-white text-[10px] font-mono px-2 py-1 whitespace-nowrap hidden group-hover:block z-10">
+                                SELECTED: INTER AMERICAN UNIVERSITY</div>
+                        </div>
+                    </div>
+                    <div class="absolute bottom-4 right-4 flex flex-col space-y-1">
+                        <button
+                            class="w-8 h-8 bg-white dark:bg-zinc-900 border border-border-academic dark:border-gray-700 flex items-center justify-center hover:bg-gray-50 shadow-sm">
+                            <span class="material-symbols-outlined text-[18px]">add</span>
+                        </button>
+                        <button
+                            class="w-8 h-8 bg-white dark:bg-zinc-900 border border-border-academic dark:border-gray-700 flex items-center justify-center hover:bg-gray-50 shadow-sm">
+                            <span class="material-symbols-outlined text-[18px]">remove</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div
+                class="col-span-4 bg-white dark:bg-zinc-900 border border-border-academic dark:border-gray-800 flex flex-col overflow-hidden">
+                <div class="p-4 border-b border-border-academic dark:border-gray-800 bg-gray-50 dark:bg-zinc-800/50">
+                    <h2 class="text-lg font-semibold tracking-tight leading-tight">Inter American University of Puerto
+                        Rico-San German</h2>
+                    <p class="text-[10px] font-mono uppercase tracking-widest text-primary mt-1">Classification: Private
+                        Non-Profit</p>
+                </div>
+                <div class="p-4 flex-grow overflow-y-auto custom-scrollbar space-y-6">
+                    <section>
+                        <h3
+                            class="font-mono text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-2 border-b border-border-academic dark:border-gray-800 pb-1">
+                            Institutional Identifiers</h3>
+                        <div class="space-y-1 font-mono text-sm">
+                            <div class="flex justify-between py-1">
+                                <span class="text-gray-500">School ID</span>
+                                <span class="font-bold">242617</span>
+                            </div>
+                            <div class="flex justify-between py-1">
+                                <span class="text-gray-500">UnitID</span>
+                                <span class="font-bold">242617-001</span>
+                            </div>
+                        </div>
+                    </section>
+                    <section>
+                        <h3
+                            class="font-mono text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-2 border-b border-border-academic dark:border-gray-800 pb-1">
+                            Admission Statistics</h3>
+                        <div class="space-y-1 font-mono text-sm">
+                            <div class="flex justify-between py-1">
+                                <span class="text-gray-500">Applications</span>
+                                <span class="font-bold">1,050</span>
+                            </div>
+                            <div class="flex justify-between py-1">
+                                <span class="text-gray-500">Admitted</span>
+                                <span class="font-bold">575</span>
+                            </div>
+                            <div class="flex justify-between py-1">
+                                <span class="text-gray-500">Enrolled</span>
+                                <span class="font-bold">518</span>
+                            </div>
+                            <div class="flex justify-between py-1 bg-primary/5 px-1 -mx-1">
+                                <span class="text-primary font-bold">Admission Rate</span>
+                                <span class="font-bold text-primary">54.8%</span>
+                            </div>
+                            <div class="flex justify-between py-1">
+                                <span class="text-gray-500">Yield Rate</span>
+                                <span class="font-bold">90.1%</span>
+                            </div>
+                        </div>
+                    </section>
+                    <section>
+                        <h3
+                            class="font-mono text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-2 border-b border-border-academic dark:border-gray-800 pb-1">
+                            Financial Analysis</h3>
+                        <div class="space-y-1 font-mono text-sm">
+                            <div class="flex justify-between py-1">
+                                <span class="text-gray-500">Avg Aid / Student</span>
+                                <span class="font-bold">$12,480</span>
+                            </div>
+                            <div class="flex justify-between py-1">
+                                <span class="text-gray-500">Pell Grant Pct</span>
+                                <span class="font-bold">78.0%</span>
+                            </div>
+                        </div>
+                    </section>
+                    <section>
+                        <h3
+                            class="font-mono text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-2 border-b border-border-academic dark:border-gray-800 pb-1">
+                            Demographics</h3>
+                        <div class="space-y-1 font-mono text-sm">
+                            <div class="flex justify-between py-1">
+                                <span class="text-gray-500">Middle Income</span>
+                                <span class="font-bold">20.4%</span>
+                            </div>
+                            <div class="text-[9px] text-gray-400 uppercase italic">Cohort average: 33.0%</div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white dark:bg-zinc-900 border border-border-academic dark:border-gray-800 overflow-hidden">
+            <div
+                class="p-4 border-b border-border-academic dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-zinc-800/30">
+                <div class="flex items-center space-x-4">
+                    <h2 class="font-mono text-xs font-bold uppercase tracking-widest flex items-center">
+                        <span class="w-2 h-2 bg-primary mr-2"></span>
+                        Manuscript Repository
+                    </h2>
+                    <div class="h-4 w-[1px] bg-border-academic dark:bg-gray-700"></div>
+                    <span class="text-[10px] font-mono text-gray-400 uppercase">Records: 1,865 matching</span>
+                </div>
+                <div class="flex space-x-2">
+                    <button
+                        class="px-4 py-1.5 bg-primary text-white text-[10px] font-mono flex items-center hover:opacity-90 transition-opacity">
+                        <span class="material-symbols-outlined text-[16px] mr-2">download</span>
+                        EXPORT_CSV
+                    </button>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50 dark:bg-zinc-800/50 font-mono text-[10px] uppercase text-gray-500">
+                            <th class="px-6 py-3 border-b border-border-academic dark:border-gray-800 font-bold">
+                                Institution Name <span
+                                    class="material-symbols-outlined text-[12px] align-middle">unfold_more</span></th>
+                            <th class="px-6 py-3 border-b border-border-academic dark:border-gray-800 font-bold">
+                                Admission Rate <span
+                                    class="material-symbols-outlined text-[12px] align-middle">unfold_more</span></th>
+                            <th class="px-6 py-3 border-b border-border-academic dark:border-gray-800 font-bold">
+                                Enrollment <span
+                                    class="material-symbols-outlined text-[12px] align-middle">unfold_more</span></th>
+                            <th class="px-6 py-3 border-b border-border-academic dark:border-gray-800 font-bold">Yield
+                                Rate <span class="material-symbols-outlined text-[12px] align-middle">unfold_more</span>
+                            </th>
+                            <th class="px-6 py-3 border-b border-border-academic dark:border-gray-800 font-bold">Avg.
+                                Amount <span
+                                    class="material-symbols-outlined text-[12px] align-middle">unfold_more</span></th>
+                            <th
+                                class="px-6 py-3 border-b border-border-academic dark:border-gray-800 font-bold text-right">
+                                Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="font-mono text-xs divide-y divide-border-academic dark:divide-gray-800">
+                        <tr class="hover:bg-primary/5 transition-colors cursor-pointer group">
+                            <td class="px-6 py-4 font-bold text-slate-custom dark:text-gray-100">Alabama A &amp; M
+                                University</td>
+                            <td class="px-6 py-4">71.6%</td>
+                            <td class="px-6 py-4">1,534</td>
+                            <td class="px-6 py-4">32.7%</td>
+                            <td class="px-6 py-4">$22,968</td>
+                            <td class="px-6 py-4 text-right"><span
+                                    class="material-symbols-outlined text-[18px] text-gray-400 group-hover:text-primary">open_in_new</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-primary/5 transition-colors cursor-pointer group">
+                            <td class="px-6 py-4 font-bold text-slate-custom dark:text-gray-100">University of Alabama
+                                at Birmingham</td>
+                            <td class="px-6 py-4">88.5%</td>
+                            <td class="px-6 py-4">2,415</td>
+                            <td class="px-6 py-4">22.9%</td>
+                            <td class="px-6 py-4">$22,782</td>
+                            <td class="px-6 py-4 text-right"><span
+                                    class="material-symbols-outlined text-[18px] text-gray-400 group-hover:text-primary">open_in_new</span>
+                            </td>
+                        </tr>
+                        <tr class="bg-primary/5 border-l-4 border-primary">
+                            <td class="px-6 py-4 font-bold text-slate-custom dark:text-gray-100">University of Alabama
+                                in Huntsville</td>
+                            <td class="px-6 py-4">73.7%</td>
+                            <td class="px-6 py-4">1,204</td>
+                            <td class="px-6 py-4">28.3%</td>
+                            <td class="px-6 py-4">$20,891</td>
+                            <td class="px-6 py-4 text-right"><span
+                                    class="material-symbols-outlined text-[18px] text-primary">visibility</span></td>
+                        </tr>
+                        <tr class="hover:bg-primary/5 transition-colors cursor-pointer group">
+                            <td class="px-6 py-4 font-bold text-slate-custom dark:text-gray-100">Alabama State
+                                University</td>
+                            <td class="px-6 py-4">98.0%</td>
+                            <td class="px-6 py-4">890</td>
+                            <td class="px-6 py-4">15.2%</td>
+                            <td class="px-6 py-4">$23,248</td>
+                            <td class="px-6 py-4 text-right"><span
+                                    class="material-symbols-outlined text-[18px] text-gray-400 group-hover:text-primary">open_in_new</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-primary/5 transition-colors cursor-pointer group">
+                            <td class="px-6 py-4 font-bold text-slate-custom dark:text-gray-100">The University of
+                                Alabama</td>
+                            <td class="px-6 py-4">78.9%</td>
+                            <td class="px-6 py-4">7,593</td>
+                            <td class="px-6 py-4">22.7%</td>
+                            <td class="px-6 py-4">$25,580</td>
+                            <td class="px-6 py-4 text-right"><span
+                                    class="material-symbols-outlined text-[18px] text-gray-400 group-hover:text-primary">open_in_new</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-primary/5 transition-colors cursor-pointer group">
+                            <td class="px-6 py-4 font-bold text-slate-custom dark:text-gray-100">Auburn University at
+                                Montgomery</td>
+                            <td class="px-6 py-4">92.1%</td>
+                            <td class="px-6 py-4">421</td>
+                            <td class="px-6 py-4">19.4%</td>
+                            <td class="px-6 py-4">$18,450</td>
+                            <td class="px-6 py-4 text-right"><span
+                                    class="material-symbols-outlined text-[18px] text-gray-400 group-hover:text-primary">open_in_new</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div
+                class="p-4 border-t border-border-academic dark:border-gray-800 flex justify-center bg-gray-50 dark:bg-zinc-800/30">
+                <nav class="flex space-x-2 font-mono text-[10px]">
+                    <button
+                        class="px-2 py-1 border border-border-academic dark:border-gray-700 bg-white dark:bg-zinc-900 opacity-50">PREV</button>
+                    <button class="px-3 py-1 border border-primary bg-primary text-white">01</button>
+                    <button
+                        class="px-3 py-1 border border-border-academic dark:border-gray-700 bg-white dark:bg-zinc-900">02</button>
+                    <button
+                        class="px-3 py-1 border border-border-academic dark:border-gray-700 bg-white dark:bg-zinc-900">03</button>
+                    <span class="px-2 py-1">...</span>
+                    <button
+                        class="px-3 py-1 border border-border-academic dark:border-gray-700 bg-white dark:bg-zinc-900">45</button>
+                    <button
+                        class="px-2 py-1 border border-border-academic dark:border-gray-700 bg-white dark:bg-zinc-900">NEXT</button>
+                </nav>
+            </div>
+        </div>
+    </main>
+    <footer
+        class="max-w-[1600px] mx-auto px-6 py-12 border-t border-border-academic dark:border-gray-800 flex justify-between items-start opacity-50">
+        <div class="space-y-2">
+            <h4 class="font-mono text-[10px] font-bold uppercase tracking-widest">GlassBox Academic Project</h4>
+            <p class="text-[10px] max-w-xs leading-relaxed">A specialized research portal developed for high-density
+                academic data visualization and institutional analysis.</p>
+        </div>
+        <div class="flex space-x-12 font-mono text-[10px] uppercase font-bold">
+            <div class="space-y-2">
+                <div class="text-primary tracking-widest">Nodes</div>
+                <ul class="space-y-1 font-normal normal-case">
+                    <li>East Coast Aggregator</li>
+                    <li>Pacific Knowledge Base</li>
+                    <li>Symmetry Server-4</li>
+                </ul>
+            </div>
+            <div class="space-y-2">
+                <div class="text-primary tracking-widest">Legal</div>
+                <ul class="space-y-1 font-normal normal-case">
+                    <li>Data Usage Policy</li>
+                    <li>FERPA Compliance</li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

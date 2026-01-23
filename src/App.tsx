@@ -85,7 +85,7 @@ export default function App() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-white text-slate-900 font-sans rounded-none">
+    <div className="flex flex-col min-h-screen text-slate-900 font-sans rounded-none">
       <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
       <div className="flex-1 flex flex-col">
         {activeTab === 'colleges' ? (

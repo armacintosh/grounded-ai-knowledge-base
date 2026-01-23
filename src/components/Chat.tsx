@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Loader2, AlertCircle, Bot, User, Wifi, WifiOff, XCircle, Database, Eye, EyeOff } from 'lucide-react';
+import { Send, Loader2, AlertCircle, Bot, Database } from 'lucide-react';
 import { GraphRAGClient } from '../utils/graphRAG';
 import { GeminiClient } from '../utils/geminiClient';
 
@@ -29,9 +29,7 @@ export default function Chat() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isConnected, setIsConnected] = useState(true);
   const [assistantName, setAssistantName] = useState('Gemini Assistant');
-  const [showKnowledgeGraph, setShowKnowledgeGraph] = useState(true);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -42,9 +40,6 @@ export default function Chat() {
   useEffect(() => {
     const initializeClients = async () => {
       try {
-        // Initialize Gemini Client
-        // Note: For quick deployment, we are using VITE_GEMINI_API_KEY directly.
-        // In a production environment with a backend, we might route this differently.
         const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
         if (!apiKey) {
@@ -56,15 +51,12 @@ export default function Chat() {
         setAssistantName(assistant.name || 'Gemini Assistant');
         await assistantClient.current.createThread();
 
-        // Initialize GraphRAG Client
         graphRAGClient.current = new GraphRAGClient(apiKey);
         await graphRAGClient.current.ensureInitialized();
 
-        setIsConnected(true);
       } catch (err) {
         console.error('Failed to initialize clients:', err);
         setError('Failed to initialize chat. Check API Key.');
-        setIsConnected(false);
       }
     };
 
@@ -98,10 +90,8 @@ export default function Chat() {
     const userMessage = messages[messageIndex - 1];
     if (!userMessage || userMessage.isBot) return;
 
-    // Remove the failed message and all subsequent messages
     setMessages(prev => prev.slice(0, messageIndex));
 
-    // Re-send the user's message
     const newInput = userMessage.content;
     setInput(newInput);
     await handleSubmit(new Event('submit') as any);
@@ -132,11 +122,9 @@ export default function Chat() {
     setIsLoading(true);
     setError(null);
 
-    // Create new AbortController for this request
     abortControllerRef.current = new AbortController();
 
     try {
-      // Update user message status to delivered
       setMessages(prev =>
         prev.map(msg =>
           msg.id === userMessage.id
@@ -145,10 +133,8 @@ export default function Chat() {
         )
       );
 
-      // Query knowledge graph in parallel with the assistant
       const knowledgeGraphPromise = graphRAGClient.current.queryKnowledgeGraph(input.trim());
 
-      // Start streaming the response
       for await (const chunk of assistantClient.current.streamMessage(
         input.trim(),
         abortControllerRef.current.signal
@@ -162,10 +148,8 @@ export default function Chat() {
         );
       }
 
-      // Get knowledge graph results
       const { relevantNodes } = await knowledgeGraphPromise;
 
-      // Update bot message with knowledge graph data
       setMessages(prev =>
         prev.map(msg =>
           msg.id === botMessage.id
@@ -200,7 +184,7 @@ export default function Chat() {
   };
 
   const renderKnowledgeGraph = (message: Message) => {
-    if (!message.knowledgeGraph || !showKnowledgeGraph) return null;
+    if (!message.knowledgeGraph) return null;
 
     return (
       <div className="mt-4 border-t pt-4">
@@ -245,59 +229,28 @@ export default function Chat() {
 
   if (error) {
     return (
-      <div className="h-full flex items-center justify-center bg-gray-50">
+      <div className="h-full flex items-center justify-center bg-white border border-gray-200 m-6 p-12 shadow-sm">
         <div className="text-center">
           <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-          <p className="text-gray-600">{error}</p>
+          <p className="text-gray-600 font-mono text-sm">{error}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-48px)]">
-      <div className="bg-white border-b px-4 py-2 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Bot className="w-5 h-5 text-blue-500" />
-          <span className="font-medium">{assistantName}</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => setShowKnowledgeGraph(!showKnowledgeGraph)}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-800"
-            title={showKnowledgeGraph ? "Hide Knowledge Graph" : "Show Knowledge Graph"}
-          >
-            {showKnowledgeGraph ? (
-              <Eye className="w-4 h-4" />
-            ) : (
-              <EyeOff className="w-4 h-4" />
-            )}
-            <span className="text-sm">Knowledge Graph</span>
-          </button>
-          <div className="flex items-center gap-2">
-            {isConnected ? (
-              <Wifi className="w-4 h-4 text-green-500" />
-            ) : (
-              <WifiOff className="w-4 h-4 text-red-500" />
-            )}
-            <span className={`text-sm ${isConnected ? 'text-green-500' : 'text-red-500'}`}>
-              {isConnected ? 'Connected' : 'Disconnected'}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+    <div className="flex flex-col h-[calc(100vh-140px)] max-w-5xl mx-auto w-full px-6 py-8">
+      {/* Messages Area */}
+      <div className="flex-1 overflow-y-auto space-y-8 pr-4 custom-scrollbar">
         {messages.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full text-center space-y-6">
-            <div className="bg-blue-50 p-4 rounded-full">
-              <Bot className="w-12 h-12 text-blue-500" />
+          <div className="flex flex-col items-center justify-center h-full text-center space-y-6 opacity-60">
+            <div className="border border-slate-200 p-6 bg-white">
+              <Bot className="w-8 h-8 text-sage-600 mb-4 mx-auto" />
+              <h3 className="text-lg font-light text-slate-900 mb-2">Research Assistant Active</h3>
+              <p className="font-mono text-xs text-slate-500">System Ready for Inquiry</p>
             </div>
-            <div>
-              <h3 className="text-xl font-semibold text-gray-800">How can I help you today?</h3>
-              <p className="text-gray-500 mt-2">Ask me anything about the education data.</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-2xl w-full px-4">
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
               {[
                 "What are the admission rates for Ivy League schools?",
                 "Compare the cost of attendance between public vs private universities.",
@@ -306,12 +259,8 @@ export default function Chat() {
               ].map((question, index) => (
                 <button
                   key={index}
-                  onClick={() => {
-                    setInput(question);
-                    // Optional: auto-submit
-                    // handleSubmit(new Event('submit') as any); 
-                  }}
-                  className="text-left p-3 text-sm text-gray-700 bg-white border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors rounded-none"
+                  onClick={() => setInput(question)}
+                  className="text-left p-4 text-xs font-mono text-slate-600 bg-white border border-slate-200 hover:border-sage-600 hover:bg-slate-50 transition-colors"
                 >
                   {question}
                 </button>
@@ -319,44 +268,43 @@ export default function Chat() {
             </div>
           </div>
         )}
+
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`flex ${message.isBot ? 'justify-start' : 'justify-end'}`}
+            className={`flex flex-col ${message.isBot ? 'items-start' : 'items-end'}`}
           >
-            <div className={`flex gap-3 max-w-[80%] ${message.isBot ? 'flex-row' : 'flex-row-reverse'
-              }`}>
-              <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-gray-100">
-                {message.isBot ? (
-                  <Bot className="w-5 h-5 text-blue-500" />
-                ) : (
-                  <User className="w-5 h-5 text-gray-500" />
-                )}
-              </div>
-              <div className={`p-4 ${message.isBot
-                  ? 'bg-white border border-gray-200 text-gray-800'
-                  : 'bg-slate-800 text-white'
+            <div className={`max-w-[85%] relative group ${message.isBot ? '' : ''}`}>
+              {/* Label */}
+              <div className={`mb-2 text-[10px] uppercase tracking-wider font-bold ${message.isBot ? 'text-sage-600' : 'text-slate-400 text-right'
                 }`}>
-                <div className="whitespace-pre-wrap">
+                {message.isBot ? 'Gemini Assistant' : 'Researcher'}
+              </div>
+
+              {/* Card */}
+              <div className={`p-6 shadow-sm ${message.isBot
+                  ? 'bg-white border-l-4 border-sage-600 text-slate-800'
+                  : 'bg-slate-50 border-l-4 border-slate-900 text-slate-800'
+                }`}>
+                <div className="prose prose-sm prose-slate max-w-none font-light leading-relaxed whitespace-pre-wrap">
                   {message.content}
                   {message.status === 'typing' && (
-                    <span className="inline-block w-2 h-2 bg-current rounded-full animate-pulse ml-1" />
+                    <span className="inline-block w-2 h-2 bg-sage-600 animate-pulse ml-1" />
                   )}
                 </div>
+
                 {message.status === 'failed' && (
-                  <div className="mt-2 flex items-center gap-2">
-                    <span className="text-sm text-red-300 flex items-center gap-1">
-                      <AlertCircle className="w-4 h-4" />
-                      Failed to generate
-                    </span>
+                  <div className="mt-4 pt-4 border-t border-red-100 flex items-center gap-2">
+                    <span className="text-xs text-red-500 font-mono uppercase">Emission Failed</span>
                     <button
                       onClick={() => regenerateResponse(message.id)}
-                      className="text-sm text-blue-300 hover:text-blue-200 flex items-center gap-1"
+                      className="text-xs text-sage-600 underline hover:text-sage-800"
                     >
-                      Try again
+                      Retry
                     </button>
                   </div>
                 )}
+
                 {message.isBot && renderKnowledgeGraph(message)}
               </div>
             </div>
@@ -365,40 +313,31 @@ export default function Chat() {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="border-t bg-white p-4">
-        <form onSubmit={handleSubmit} className="flex gap-4">
+      {/* Input Area */}
+      <div className="mt-8 pt-8 border-t border-slate-200">
+        <form onSubmit={handleSubmit} className="relative group max-w-4xl mx-auto">
           <textarea
             ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Type your message..."
-            className="flex-1 resize-none rounded-none border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="Ask about debt, region, or graduation rates..."
+            className="w-full bg-transparent border-t-0 border-x-0 border-b-2 border-slate-200 focus:border-sage-600 focus:ring-0 text-2xl font-light py-4 placeholder-slate-300 transition-all resize-none font-sans text-slate-800"
             rows={1}
             disabled={isLoading}
           />
-          <div className="flex gap-2">
-            {isLoading && (
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-4">
+            {isLoading ? (
+              <Loader2 className="w-6 h-6 text-sage-600 animate-spin" />
+            ) : (
               <button
-                type="button"
-                onClick={cancelRequest}
-                className="bg-red-500 text-white px-4 py-2 rounded-none hover:bg-red-600"
+                type="submit"
+                disabled={!input.trim()}
+                className="bg-slate-900 text-white p-3 hover:bg-slate-700 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <XCircle className="w-5 h-5" />
+                <Send className="w-5 h-5" />
               </button>
             )}
-            <button
-              type="submit"
-              disabled={isLoading || !input.trim()}
-              className="bg-blue-500 text-white px-4 py-2 rounded-none hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-            >
-              {isLoading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <Send className="w-5 h-5" />
-              )}
-              Send
-            </button>
           </div>
         </form>
       </div>

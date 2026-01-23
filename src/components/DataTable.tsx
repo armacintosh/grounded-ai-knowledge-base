@@ -8,6 +8,7 @@ import {
   ColumnDef,
   SortingState,
   ColumnFiltersState,
+  flexRender,
 } from '@tanstack/react-table';
 import { ArrowUpDown, Download, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Institution } from '../types/institution';
@@ -83,7 +84,7 @@ export default function DataTable({ data, onRowHover }: DataTableProps) {
 
   const exportData = () => {
     const headers = columns.map(col => String(col.header)).join(',');
-    const rows = data.map(row => 
+    const rows = data.map(row =>
       columns.map(col => row[col.accessorKey as keyof Institution]).join(',')
     ).join('\n');
     const csv = `${headers}\n${rows}`;
@@ -97,21 +98,21 @@ export default function DataTable({ data, onRowHover }: DataTableProps) {
   };
 
   return (
-    <div className="bg-white shadow-lg rounded-lg p-4">
-      <div className="flex justify-between items-center mb-4">
+    <div className="bg-white border border-slate-200">
+      <div className="flex justify-between items-center p-4 border-b border-slate-200 bg-slate-50">
         <input
           type="text"
-          placeholder="Search all columns..."
+          placeholder="SEARCH DATABASE..."
           value={globalFilter}
           onChange={e => setGlobalFilter(e.target.value)}
-          className="border rounded-lg p-2 w-64"
+          className="border border-slate-300 p-2 w-64 bg-white text-xs font-mono focus:ring-1 focus:ring-sage-600 focus:border-sage-600 outline-none"
         />
         <button
           onClick={exportData}
-          className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+          className="flex items-center gap-2 bg-sage-600 text-white px-4 py-2 hover:bg-sage-400 text-xs font-mono uppercase tracking-wider transition-colors"
         >
           <Download className="w-4 h-4" />
-          Export CSV
+          EXPORT_CSV
         </button>
       </div>
 
@@ -119,13 +120,13 @@ export default function DataTable({ data, onRowHover }: DataTableProps) {
         <table className="w-full">
           <thead>
             {table.getHeaderGroups().map(headerGroup => (
-              <tr key={headerGroup.id}>
+              <tr key={headerGroup.id} className="bg-slate-50 border-b border-slate-200">
                 {headerGroup.headers.map(header => (
-                  <th key={header.id} className="px-4 py-2 text-left">
+                  <th key={header.id} className="px-4 py-3 text-left font-bold text-[10px] uppercase tracking-widest text-slate-500">
                     {header.isPlaceholder ? null : (
-                      <div className="flex items-center gap-1 cursor-pointer" onClick={() => header.column.toggleSorting()}>
-                        {String(header.column.columnDef.header)}
-                        <ArrowUpDown className="w-4 h-4" />
+                      <div className="flex items-center gap-1 cursor-pointer hover:text-slate-900" onClick={() => header.column.toggleSorting()}>
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                        <ArrowUpDown className="w-3 h-3" />
                       </div>
                     )}
                   </th>
@@ -133,17 +134,17 @@ export default function DataTable({ data, onRowHover }: DataTableProps) {
               </tr>
             ))}
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-slate-100">
             {table.getRowModel().rows.map(row => (
               <tr
                 key={row.id}
-                className="hover:bg-gray-100 cursor-pointer"
+                className="hover:bg-slate-50 cursor-pointer transition-colors"
                 onMouseEnter={() => onRowHover(row.original)}
                 onMouseLeave={() => onRowHover(null)}
               >
                 {row.getVisibleCells().map(cell => (
-                  <td key={cell.id} className="px-4 py-2 border-t">
-                    {cell.column.columnDef.cell?.(cell) ?? String(cell.getValue())}
+                  <td key={cell.id} className="px-4 py-3 text-sm font-mono text-slate-700">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
               </tr>
@@ -152,31 +153,31 @@ export default function DataTable({ data, onRowHover }: DataTableProps) {
         </table>
       </div>
 
-      <div className="flex items-center justify-between mt-4">
-        <div className="text-sm text-gray-600">
-          Showing {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to{' '}
+      <div className="flex items-center justify-between p-4 border-t border-slate-200 bg-white">
+        <div className="text-xs font-mono text-slate-500">
+          SHOWING {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} TO{' '}
           {Math.min(
             (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
             table.getFilteredRowModel().rows.length
           )}{' '}
-          of {table.getFilteredRowModel().rows.length} results
+          OF {table.getFilteredRowModel().rows.length} RESULTS
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="p-2 disabled:opacity-50"
+            className="p-2 disabled:opacity-50 hover:bg-slate-100 border border-transparent hover:border-slate-200"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <span className="text-sm">
-            Page {table.getState().pagination.pageIndex + 1} of{' '}
+          <span className="text-xs font-mono text-slate-600">
+            PAGE {table.getState().pagination.pageIndex + 1} OF{' '}
             {table.getPageCount()}
           </span>
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            className="p-2 disabled:opacity-50"
+            className="p-2 disabled:opacity-50 hover:bg-slate-100 border border-transparent hover:border-slate-200"
           >
             <ChevronRight className="w-4 h-4" />
           </button>
