@@ -37,6 +37,7 @@ We built the **Urban Education Explorer**, an intelligent web application design
 
 #### System Architecture
 
+```mermaid
 graph TD
     User[User Query] --> Client[React Client]
     
@@ -55,6 +56,7 @@ graph TD
     end
     
     NetlifyGen -->|Final Response| Client
+```
 
 *Fig 4: The custom GraphRAG architecture combines serverless AI calls with client-side vector search for low-latency code retrieval.*
 
