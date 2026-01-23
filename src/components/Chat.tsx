@@ -42,24 +42,20 @@ export default function Chat() {
   useEffect(() => {
     const initializeClients = async () => {
       try {
-        const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+        // API Key is now managed server-side via Netlify Functions
 
-        if (!apiKey) {
-          throw new Error('Missing Gemini configuration. Please set VITE_GEMINI_API_KEY.');
-        }
-
-        assistantClient.current = new GeminiClient(apiKey);
+        assistantClient.current = new GeminiClient('');
         const assistant = await assistantClient.current.initialize();
         setAssistantName(assistant.name || 'Gemini Assistant');
         await assistantClient.current.createThread();
 
-        graphRAGClient.current = new GraphRAGClient(apiKey);
+        graphRAGClient.current = new GraphRAGClient('');
         await graphRAGClient.current.ensureInitialized();
         setIsConnected(true);
 
       } catch (err) {
         console.error('Failed to initialize clients:', err);
-        setError('Failed to initialize chat. Check API Key.');
+        setError('Failed to initialize chat. Check server connection.');
         setIsConnected(false);
       }
     };

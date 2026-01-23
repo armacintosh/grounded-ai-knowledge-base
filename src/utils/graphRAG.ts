@@ -1,4 +1,5 @@
-import { GoogleGenerativeAI, GenerativeModel } from '@google/generative-ai';
+// GoogleGenerativeAI imports removed, using Netlify proxy
+
 
 interface NodeDetails {
   name: string;
@@ -18,19 +19,13 @@ interface Neo4jRelationship {
 }
 
 export class GraphRAGClient {
-  private genAI: GoogleGenerativeAI;
-  private embeddingModel: GenerativeModel;
-  private chatModel: GenerativeModel;
   private nodeEmbeddings: { [key: string]: number[] };
   private nodeNames: string[];
   private initialized: boolean = false;
 
-  constructor(apiKey: string) {
-    this.genAI = new GoogleGenerativeAI(apiKey);
-    this.embeddingModel = this.genAI.getGenerativeModel({ model: "text-embedding-004" });
-    this.chatModel = this.genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+  constructor(_apiKey: string) {
+    // API Key is now handled server-side
     this.nodeEmbeddings = {};
-    // @ts-ignore
     this.nodeNames = [];
   }
 
@@ -153,14 +148,24 @@ export class GraphRAGClient {
     enhancedResponse: string;
   }> {
     try {
-      // Get embeddings for the query
-      const embeddingResult = await this.embeddingModel.embedContent(query);
-      const queryEmbedding = embeddingResult.embedding.values;
+      // Get embeddings for the query via Proxy
+      const embeddingResponse = await fetch('/.netlify/functions/chat', {
+        method: 'POST',
+        body: JSON.stringify({ message: query, type: 'embedding' }),
+        headers: { 'Content-Type': 'application/json' }
+      });
 
-      // Query FAISS index
+      if (!embeddingResponse.ok) {
+        throw new Error(`Failed to embed content: ${embeddingResponse.statusText}`);
+      }
+
+      const embeddingData = await embeddingResponse.json();
+      const queryEmbedding = embeddingData.embedding;
+
+      // Query FAISS index (Local)
       const similarNodes = await this.queryFaissIndex(queryEmbedding);
 
-      // Fetch details and relationships for each node
+      // Fetch details and relationships for each node (Local Logic)
       const relevantNodes = await Promise.all(
         similarNodes.map(async ({ name, similarity }) => {
           const details = await this.fetchNodeDetails(name);
@@ -169,7 +174,7 @@ export class GraphRAGClient {
         })
       );
 
-      // Generate enhanced response using Gemini
+      // Generate enhanced response using Gemini via Proxy
       const systemPrompt = `You are a helpful assistant with access to a knowledge graph about educational institutions. 
         Based on the following relevant nodes from the graph, provide a detailed response to the user's query.
         
@@ -178,13 +183,23 @@ export class GraphRAGClient {
         
         Provide a clear, concise response that incorporates the available information.`;
 
-      const result = await this.chatModel.generateContent([
-        systemPrompt,
-        `User Query: ${query}`
-      ]);
+      const generationResponse = await fetch('/.netlify/functions/chat', {
+        method: 'POST',
+        body: JSON.stringify({ message: `${systemPrompt}\n\nUser Query: ${query}`, type: 'generate' }),
+        headers: { 'Content-Type': 'application/json' }
+      });
 
-      const response = await result.response;
-      const enhancedResponse = response.text();
+      if (!generationResponse.ok) {
+        // Fallback if RAG generation fails
+        console.warn('RAG generation failed, returning only retrieval results');
+        return {
+          relevantNodes,
+          enhancedResponse: 'Failed to generate enhanced response using Knowledge Graph context.'
+        };
+      }
+
+      const generationData = await generationResponse.json();
+      const enhancedResponse = generationData.text;
 
       return {
         relevantNodes,
