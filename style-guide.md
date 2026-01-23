@@ -1,62 +1,35 @@
-# **GlassBox: Open Scholarship & Citation Integrity**
+ollow this specialized UX/UI specification. This guide adapts the "Epistemic Clarity" philosophy to spatial data.
 
-### **UI/UX Design System & Style Guide**
+1. Core Visual Tokens
+The Palette: Maintain the institutional, calm tones.
+Background: #E1E9EA (Arctic Mist) with the bg-academic-grid (40px overlay).
+Primary Action/Data Points: #597E6D (Sage Leaf) for buttons and active map layers.
+Typography: Inter for UI/Labels, JetBrains Mono for coordinates and metadata.
+The "Sharp Edge" Rule: No rounded corners (rounded-none). All buttons, containers, and map tooltips must have 90-degree angles.
+2. Component-Specific Styling
+2.1 The Map Interface (Spatial Canvas)
+Basemap: Use a monochromatic or grayscale basemap (Carto Positron or custom Mapbox style) to allow data layers to stand out.
+Map Controls: Positioned top-right or top-left in square white boxes with border-slate-900/10. Use thin 1px icons.
+Scale Bar: Use JetBrains Mono for the scale text.
+Coordinate Display: A small box at the bottom-left showing LAT: XX.XXXX / LON: XX.XXXX in mono font.
+2.2 The Geographic Chatbot (Panel Strategy)
+Instead of a floating bubble, the chatbot should be an integrated Panel.
 
-Version: 2.0.0 (Academic Edition)
-
-Target Stack: React / TypeScript / Tailwind CSS
-
-Design Philosophy: Epistemic Clarity. The interface is a neutral vessel for high-density information. It prioritizes the readability of citations, datasets, and peer-review audits over decoration.
-
----
-
-## **1\. Core Tokens**
-
-### **1.1 Color Palette**
-
-The palette creates a calm, institutional environment suitable for long-form reading and data analysis.
-
-| Token Name | Hex Code | Tailwind Name | Semantic Usage (Academic) |
-| :---- | :---- | :---- | :---- |
-| **Deep Slate** | \#1C2E36 | slate-900 | Primary text, DOI links, Navigation. |
-| **Sage Leaf** | \#597E6D | sage-600 | "Peer Reviewed" status, Publish actions, Impact metrics. |
-| **Willow Green** | \#7FA088 | sage-400 | Citation graphs, Altmetric indicators. |
-| **Arctic Mist** | \#E1E9EA | slate-100 | Global canvas, DOI trace backgrounds. |
-| **Pure White** | \#FFFFFF | white | Manuscript cards, Reading surfaces. |
-
-### **1.2 Typography**
-
-Primary: Inter (UI & Abstracts)
-
-Data/Bibliometrics: JetBrains Mono
-
-| Element | Size | Weight | Tracking | Case | Usage |
-| :---- | :---- | :---- | :---- | :---- | :---- |
-| **H1 (Display)** | 48px+ | 300 | \-0.02em | Mixed | Landing page slogans (e.g., "OPEN ACCESS"). |
-| **H2 (Module)** | 14px | 700 | 0.20em | UPPER | Section headers (e.g., "BIBLIOGRAPHY"). |
-| **H3 (Title)** | 18px | 600 | \-0.01em | Mixed | Manuscript Titles. |
-| **Body (Serif)** | 16px | 400 | Normal | Mixed | Abstracts (Optional: use Merriweather or Inter with relaxed leading). |
-| **Meta/DOI** | 12px | 500 | 0.05em | UPPER | DOIs, ORCID IDs, Dates. |
-| **Code/Data** | 13px | 400 | Normal | Mixed | p-values, raw data samples. |
-
----
-
-### **2.2 Spacing & Rhythm**
-
-* **Density:** High. Academic interfaces require high data density.  
-* **Margins:** Use gap-x-8 for grid layouts to separate sidebar citation tools from the main manuscript text.
-
----
-
-## **3\. Component Library**
-
-**GLOBAL RULE:** rounded-none. Academic rigor implies sharp edges. No soft corners.
-
-### **3.1 Buttons (Action Primitives)**
-
-* **Primary (Submit / Publish)**  
-  * bg-\[\#597E6D\] text-white font-bold uppercase tracking-\[0.15em\] h-10 px-6 hover:brightness-110  
-* **Secondary (Export Citation)**  
-  * border border-slate-900/20 text-slate-900 font-medium text-xs uppercase tracking-widest hover:bg-white
-
-
+Layout: A collapsible side panel (Right or Left) that mirrors the "Metadata Verification" panel from the GlassBox lab.
+Message Bubbles: Use square cards.
+User: bg-slate-100 with border-l-4 border-slate-900.
+AI: bg-white with border-l-4 border-sage-600.
+Input Field: Use the Section 3.5 style from the GlassBox guide: an underline-only input with h-16 text-xl font-light.
+2.3 Data Legend & Layers
+Container: White background, shadow-[2px_2px_0px_0px_rgba(28,46,54,0.05)].
+Layer Toggles: Use square checkboxes. When active, use the Sage Leaf green (#597E6D).
+Academic Badging: If a dataset is from a specific source (e.g., NASA, USGS), use the status badge style (e.g., bg-slate-900 text-white for "VERIFIED DATA").
+3. Suggested Screen Architecture
+Feature	GlassBox Translation
+Global Navigation	Keep the "Masthead" (Journals, Submissions...) but replace with (MAP, DATASETS, ANALYTICS, EXPORTS).
+Layer Management	Treat layers like the "Ingestion Queue" table—high density, mono font for file sizes/dates.
+Analysis Lab	Use the 3-panel layout: Panel A: Map View. Panel B: Data Table/Graph. Panel C: Chatbot/AI Analyst.
+4. Interaction Design (UX)
+State Visibility: Use the "Pulsing Blue" badge when the AI is processing a spatial query or rendering a large GeoJSON.
+Commitment: When a user filters data via the chatbot, provide a "PIN TO MAP" button that uses the Primary Button style (Sage Leaf, uppercase, tracking-widest).
+Hover States: When hovering over a map feature, the tooltip should look like a "Manuscript Card"—white, sharp-edged, with JetBrains Mono metadata.
