@@ -55,6 +55,7 @@ graph TD
     end
     
     NetlifyGen -->|Final Response| Client
+
 *Fig 4: The custom GraphRAG architecture combines serverless AI calls with client-side vector search for low-latency code retrieval.*
 
 
