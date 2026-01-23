@@ -27,15 +27,15 @@ export default function ApplicantDetailsPanel({ applicant }: ApplicantDetailsPan
       <h2 className="text-2xl font-bold mb-6">{applicant.name}</h2>
       <div className="space-y-6">
         <Section title="Applicant Details">
-          <InfoRow label="Casper Z-Score" value={applicant.casper_z.toFixed(2)} />
+          <InfoRow label="GPA" value={applicant.gpa_z.toFixed(2)} />
           <InfoRow label="Parent Education" value={applicant.parent_ed} />
           <InfoRow label="Household Income" value={applicant.household_income} />
         </Section>
 
         <Section title="High School Information">
-          <InfoRow 
-            label="High School Poverty" 
-            value={formatPercent(applicant.meps_poverty_pct || 0)} 
+          <InfoRow
+            label="High School Poverty"
+            value={formatPercent(applicant.meps_poverty_pct || 0)}
           />
         </Section>
       </div>

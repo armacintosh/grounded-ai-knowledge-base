@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Applicant } from '../types/applicant';
 import { Brain } from 'lucide-react';
 
@@ -8,10 +8,10 @@ interface ApplicantListProps {
   onApplicantSelect: (applicant: Applicant) => void;
 }
 
-export default function ApplicantList({ 
-  applicants, 
-  selectedApplicant, 
-  onApplicantSelect 
+export default function ApplicantList({
+  applicants,
+  selectedApplicant,
+  onApplicantSelect
 }: ApplicantListProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -21,7 +21,7 @@ export default function ApplicantList({
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!selectedApplicant) return;
-      
+
       const currentIndex = applicants.findIndex(a => a.applicant_id === selectedApplicant.applicant_id);
       if (currentIndex === -1) return;
 
@@ -37,7 +37,7 @@ export default function ApplicantList({
   }, [applicants, selectedApplicant, onApplicantSelect]);
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className="overflow-x-auto pb-4 px-5 hide-scrollbar"
       style={{ scrollBehavior: 'smooth' }}
@@ -67,7 +67,7 @@ export default function ApplicantList({
               <div className="flex items-center gap-1 bg-blue-100 px-2 py-1 rounded">
                 <Brain className="w-4 h-4 text-blue-600" />
                 <span className="font-medium text-blue-600">
-                  {applicant.casper_z.toFixed(2)}
+                  {applicant.gpa_z.toFixed(2)}
                 </span>
               </div>
             </div>

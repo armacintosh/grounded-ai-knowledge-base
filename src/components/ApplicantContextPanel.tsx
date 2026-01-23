@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrendingUp, TrendingDown, DollarSign, School, Users, AlertTriangle } from 'lucide-react';
+import { TrendingUp, DollarSign, School, Users } from 'lucide-react';
 import { Applicant } from '../types/applicant';
 import { Institution } from '../types/institution';
 
@@ -18,60 +18,60 @@ interface Metric {
   details?: React.ReactNode;
 }
 
-export default function ApplicantContextPanel({ 
-  applicant, 
+export default function ApplicantContextPanel({
+  applicant,
   allApplicants,
-  institutions 
+  institutions
 }: ApplicantContextPanelProps) {
   if (!applicant) return null;
 
-  const getCasperPercentileByParentEd = (score: number, parentEd: string): number => {
+  const getGpaPercentileByParentEd = (score: number, parentEd: string): number => {
     const sameEdLevel = allApplicants.filter(a => a.parent_ed === parentEd);
-    const belowCount = sameEdLevel.filter(a => a.casper_z < score).length;
+    const belowCount = sameEdLevel.filter(a => a.gpa_z < score).length;
     return (belowCount / sameEdLevel.length) * 100;
   };
 
-  const getCasperPercentileByIncome = (score: number, income: string): number => {
+  const getGpaPercentileByIncome = (score: number, income: string): number => {
     const sameIncome = allApplicants.filter(a => a.household_income === income);
-    const belowCount = sameIncome.filter(a => a.casper_z < score).length;
+    const belowCount = sameIncome.filter(a => a.gpa_z < score).length;
     return (belowCount / sameIncome.length) * 100;
   };
 
-  const getAverageCasperByParentEd = (parentEd: string): number => {
+  const getAverageGpaByParentEd = (parentEd: string): number => {
     const sameEdLevel = allApplicants.filter(a => a.parent_ed === parentEd);
-    const sum = sameEdLevel.reduce((acc, curr) => acc + curr.casper_z, 0);
+    const sum = sameEdLevel.reduce((acc, curr) => acc + curr.gpa_z, 0);
     return sum / sameEdLevel.length;
   };
 
-  const getAverageCasperByIncome = (income: string): number => {
+  const getAverageGpaByIncome = (income: string): number => {
     const sameIncome = allApplicants.filter(a => a.household_income === income);
-    const sum = sameIncome.reduce((acc, curr) => acc + curr.casper_z, 0);
+    const sum = sameIncome.reduce((acc, curr) => acc + curr.gpa_z, 0);
     return sum / sameIncome.length;
   };
 
   const getFinancialAidDetails = () => {
     if (!applicant.applied_to.length) return { value: 'low', schools: [] };
-    
-    const appliedSchools = institutions.filter(inst => 
+
+    const appliedSchools = institutions.filter(inst =>
       applicant.applied_to.includes(inst.unitid)
     );
-    
+
     // Calculate median aid amount across all institutions
     const allAidAmounts = institutions
       .map(inst => inst.sum_average_amount || 0)
       .sort((a, b) => a - b);
     const medianAid = allAidAmounts[Math.floor(allAidAmounts.length / 2)];
-    
+
     // Get aid details for each school
     const schools = appliedSchools.map(school => ({
       name: school.inst_name,
       aid: school.sum_average_amount || 0,
       isHigh: (school.sum_average_amount || 0) > medianAid
     }));
-    
+
     // Sort schools by aid amount (highest first)
     schools.sort((a, b) => b.aid - a.aid);
-    
+
     const averageAid = schools.reduce((sum, school) => sum + school.aid, 0) / schools.length;
     return {
       value: averageAid > medianAid ? 'high' : 'low',
@@ -103,23 +103,23 @@ export default function ApplicantContextPanel({
     }).format(amount);
   };
 
-  const parentEdPercentile = getCasperPercentileByParentEd(applicant.casper_z, applicant.parent_ed);
-  const incomePercentile = getCasperPercentileByIncome(applicant.casper_z, applicant.household_income);
-  const isAboveAverageParentEd = applicant.casper_z > getAverageCasperByParentEd(applicant.parent_ed);
-  const isAboveAverageIncome = applicant.casper_z > getAverageCasperByIncome(applicant.household_income);
+  const parentEdPercentile = getGpaPercentileByParentEd(applicant.gpa_z, applicant.parent_ed);
+  const incomePercentile = getGpaPercentileByIncome(applicant.gpa_z, applicant.household_income);
+  const isAboveAverageParentEd = applicant.gpa_z > getAverageGpaByParentEd(applicant.parent_ed);
+  const isAboveAverageIncome = applicant.gpa_z > getAverageGpaByIncome(applicant.household_income);
   const socioeconomicContext = getSocioeconomicContext();
   const financialAid = getFinancialAidDetails();
 
   const metrics: Metric[] = [
     {
-      label: 'Casper Z-Score vs Parent Education Group',
+      label: 'GPA Z-Score vs Parent Education Group',
       value: isAboveAverageParentEd ? 'Above Average' : 'Below Average',
       subtext: `${parentEdPercentile.toFixed(1)}% within ${applicant.parent_ed} education group`,
       icon: <TrendingUp className="w-5 h-5" />,
       status: isAboveAverageParentEd ? 'positive' : 'negative'
     },
     {
-      label: 'Casper Z-Score vs Income Group',
+      label: 'GPA Z-Score vs Income Group',
       value: isAboveAverageIncome ? 'Above Average' : 'Below Average',
       subtext: `${incomePercentile.toFixed(1)}% within ${applicant.household_income} income group`,
       icon: <Users className="w-5 h-5" />,
@@ -142,11 +142,10 @@ export default function ApplicantContextPanel({
           {financialAid.schools.map((school, index) => (
             <div
               key={index}
-              className={`flex justify-between text-sm rounded px-2 py-1 ${
-                school.isHigh 
-                  ? 'bg-gray-200 text-gray-800'
-                  : 'bg-gray-100 text-gray-600'
-              }`}
+              className={`flex justify-between text-sm rounded px-2 py-1 ${school.isHigh
+                ? 'bg-gray-200 text-gray-800'
+                : 'bg-gray-100 text-gray-600'
+                }`}
             >
               <span className="truncate flex-1 mr-2">{school.name}</span>
               <span className="font-medium">{formatCurrency(school.aid)}</span>

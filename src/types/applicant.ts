@@ -1,7 +1,7 @@
 export interface Applicant {
   applicant_id: string;
   name: string;
-  casper_z: number;
+  gpa_z: number;
   parent_ed: string;
   household_income: string;
   zip: number;

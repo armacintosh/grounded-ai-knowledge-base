@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Loader2, AlertCircle, Bot, User, Wifi, WifiOff, XCircle, Database, Eye, EyeOff } from 'lucide-react';
 import { GraphRAGClient } from '../utils/graphRAG';
-import { AssistantClient } from '../utils/assistantClient';
+import { GeminiClient } from '../utils/geminiClient';
 
 interface Message {
   id: string;
@@ -30,29 +30,30 @@ export default function Chat() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(true);
-  const [assistantName, setAssistantName] = useState('AI Assistant');
+  const [assistantName, setAssistantName] = useState('Gemini Assistant');
   const [showKnowledgeGraph, setShowKnowledgeGraph] = useState(true);
-  
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
-  const assistantClient = useRef<AssistantClient | null>(null);
+  const assistantClient = useRef<GeminiClient | null>(null);
   const graphRAGClient = useRef<GraphRAGClient | null>(null);
 
   useEffect(() => {
     const initializeClients = async () => {
       try {
-        // Initialize Assistant Client
-        const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-        const assistantId = import.meta.env.VITE_OPENAI_ASSISTANT_ID;
-        
-        if (!apiKey || !assistantId) {
-          throw new Error('Missing OpenAI configuration');
+        // Initialize Gemini Client
+        // Note: For quick deployment, we are using VITE_GEMINI_API_KEY directly.
+        // In a production environment with a backend, we might route this differently.
+        const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+
+        if (!apiKey) {
+          throw new Error('Missing Gemini configuration. Please set VITE_GEMINI_API_KEY.');
         }
 
-        assistantClient.current = new AssistantClient(apiKey, assistantId);
+        assistantClient.current = new GeminiClient(apiKey);
         const assistant = await assistantClient.current.initialize();
-        setAssistantName(assistant.name || 'AI Assistant');
+        setAssistantName(assistant.name || 'Gemini Assistant');
         await assistantClient.current.createThread();
 
         // Initialize GraphRAG Client
@@ -62,7 +63,7 @@ export default function Chat() {
         setIsConnected(true);
       } catch (err) {
         console.error('Failed to initialize clients:', err);
-        setError('Failed to initialize chat');
+        setError('Failed to initialize chat. Check API Key.');
         setIsConnected(false);
       }
     };
@@ -99,7 +100,7 @@ export default function Chat() {
 
     // Remove the failed message and all subsequent messages
     setMessages(prev => prev.slice(0, messageIndex));
-    
+
     // Re-send the user's message
     const newInput = userMessage.content;
     setInput(newInput);
@@ -168,11 +169,11 @@ export default function Chat() {
       setMessages(prev =>
         prev.map(msg =>
           msg.id === botMessage.id
-            ? { 
-                ...msg, 
-                status: 'delivered',
-                knowledgeGraph: { relevantNodes }
-              }
+            ? {
+              ...msg,
+              status: 'delivered',
+              knowledgeGraph: { relevantNodes }
+            }
             : msg
         )
       );
@@ -180,7 +181,7 @@ export default function Chat() {
       console.error('Error sending message:', err);
       const errorMessage = err instanceof Error ? err.message : 'Failed to send message';
       setError(errorMessage);
-      
+
       if (err instanceof Error && err.message === 'Request cancelled') {
         setMessages(prev => prev.filter(msg => msg.id !== botMessage.id));
       } else {
@@ -292,9 +293,8 @@ export default function Chat() {
             key={message.id}
             className={`flex ${message.isBot ? 'justify-start' : 'justify-end'}`}
           >
-            <div className={`flex gap-3 max-w-[80%] ${
-              message.isBot ? 'flex-row' : 'flex-row-reverse'
-            }`}>
+            <div className={`flex gap-3 max-w-[80%] ${message.isBot ? 'flex-row' : 'flex-row-reverse'
+              }`}>
               <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
                 {message.isBot ? (
                   <Bot className="w-5 h-5 text-blue-500" />
@@ -302,11 +302,10 @@ export default function Chat() {
                   <User className="w-5 h-5 text-gray-500" />
                 )}
               </div>
-              <div className={`rounded-lg p-4 ${
-                message.isBot
+              <div className={`rounded-lg p-4 ${message.isBot
                   ? 'bg-white border border-gray-200'
                   : 'bg-blue-500 text-white'
-              }`}>
+                }`}>
                 <div className="whitespace-pre-wrap">
                   {message.content}
                   {message.status === 'typing' && (

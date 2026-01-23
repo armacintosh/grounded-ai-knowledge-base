@@ -1,9 +1,8 @@
 import { Handler } from '@netlify/functions';
-import OpenAI from 'openai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 export const handler: Handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -12,19 +11,19 @@ export const handler: Handler = async (event) => {
 
   try {
     const { message } = JSON.parse(event.body || '{}');
-    
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: message }],
-    });
+
+    const result = await model.generateContent(message);
+    const response = await result.response;
+    const text = response.text();
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        message: completion.choices[0].message.content
+        message: text
       })
     };
   } catch (error) {
+    console.error('Error:', error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'Failed to process chat request' })

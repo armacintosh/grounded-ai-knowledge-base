@@ -1,4 +1,4 @@
-import { OpenAI } from 'openai';
+import { GoogleGenerativeAI, GenerativeModel } from '@google/generative-ai';
 
 interface NodeDetails {
   name: string;
@@ -18,14 +18,19 @@ interface Neo4jRelationship {
 }
 
 export class GraphRAGClient {
-  private openai: OpenAI;
+  private genAI: GoogleGenerativeAI;
+  private embeddingModel: GenerativeModel;
+  private chatModel: GenerativeModel;
   private nodeEmbeddings: { [key: string]: number[] };
   private nodeNames: string[];
   private initialized: boolean = false;
 
   constructor(apiKey: string) {
-    this.openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
+    this.genAI = new GoogleGenerativeAI(apiKey);
+    this.embeddingModel = this.genAI.getGenerativeModel({ model: "text-embedding-004" });
+    this.chatModel = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     this.nodeEmbeddings = {};
+    // @ts-ignore
     this.nodeNames = [];
   }
 
@@ -37,7 +42,7 @@ export class GraphRAGClient {
         throw new Error(`Failed to load node embeddings: ${nodeEmbeddingsResponse.statusText}`);
       }
       this.nodeEmbeddings = await nodeEmbeddingsResponse.json();
-      
+
       // Load node names
       const nodeNamesResponse = await fetch('/data/node_names.txt');
       if (!nodeNamesResponse.ok) {
@@ -45,7 +50,7 @@ export class GraphRAGClient {
       }
       const nodeNamesText = await nodeNamesResponse.text();
       this.nodeNames = nodeNamesText.split('\n').filter(Boolean);
-      
+
       this.initialized = true;
     } catch (error) {
       console.error('Error loading GraphRAG data:', error);
@@ -103,7 +108,7 @@ export class GraphRAGClient {
     // In a real implementation, this would query Neo4j
     // For now, we'll generate sample relationships based on node name
     const relationships: Neo4jRelationship[] = [];
-    
+
     // Add EXISTS_IN relationship for all nodes
     relationships.push({
       type: 'EXISTS_IN',
@@ -149,11 +154,8 @@ export class GraphRAGClient {
   }> {
     try {
       // Get embeddings for the query
-      const response = await this.openai.embeddings.create({
-        input: query,
-        model: "text-embedding-ada-002"
-      });
-      const queryEmbedding = response.data[0].embedding;
+      const embeddingResult = await this.embeddingModel.embedContent(query);
+      const queryEmbedding = embeddingResult.embedding.values;
 
       // Query FAISS index
       const similarNodes = await this.queryFaissIndex(queryEmbedding);
@@ -167,7 +169,7 @@ export class GraphRAGClient {
         })
       );
 
-      // Generate enhanced response using GPT
+      // Generate enhanced response using Gemini
       const systemPrompt = `You are a helpful assistant with access to a knowledge graph about educational institutions. 
         Based on the following relevant nodes from the graph, provide a detailed response to the user's query.
         
@@ -176,19 +178,17 @@ export class GraphRAGClient {
         
         Provide a clear, concise response that incorporates the available information.`;
 
-      const chatResponse = await this.openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: query }
-        ],
-        temperature: 0.7,
-        max_tokens: 500
-      });
+      const result = await this.chatModel.generateContent([
+        systemPrompt,
+        `User Query: ${query}`
+      ]);
+
+      const response = await result.response;
+      const enhancedResponse = response.text();
 
       return {
         relevantNodes,
-        enhancedResponse: chatResponse.choices[0].message.content || 'No response generated'
+        enhancedResponse: enhancedResponse || 'No response generated'
       };
     } catch (error) {
       console.error('Error in queryKnowledgeGraph:', error);
