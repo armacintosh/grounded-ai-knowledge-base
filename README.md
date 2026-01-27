@@ -1,6 +1,7 @@
 # Grounded AI Knowledge Base (GraphRAG)
+Jan 2025
 
-[🌐 Visit Grounded Scientific](https://alexandermacintosh.ca/) | [📅 Book a Strategy Call](https://calendar.app.google/mWcfwiGYS5trNMer6)
+[🌐 Brows My Profile](https://alexandermacintosh.ca/) | [📅 Book a Strategy Call](https://calendar.app.google/mWcfwiGYS5trNMer6)
 
 > **Project Context:** A "Glass Box" RAG system designed to navigate complex public datasets (Urban Institute Education Data).
 > **Business Value:** Solving the "Retrieval Problem" in AI by using GraphRAG to map natural language queries to authoritative data codes (3,000+ variables) without hallucination.
