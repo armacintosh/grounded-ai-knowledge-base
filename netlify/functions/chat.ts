@@ -18,7 +18,7 @@ export const handler: Handler = async (event) => {
     const genAI = new GoogleGenerativeAI(apiKey);
 
     if (type === 'embedding') {
-      const model = genAI.getGenerativeModel({ model: "text-embedding-004" });
+      const model = genAI.getGenerativeModel({ model: "gemini-embedding-001" });
       const result = await model.embedContent(message);
       return {
         statusCode: 200,
@@ -26,7 +26,7 @@ export const handler: Handler = async (event) => {
       };
     } else if (type === 'generate') {
       // Single turn generation (used for RAG enhancement)
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
       const result = await model.generateContent(message);
       const response = await result.response;
       return {
@@ -35,7 +35,7 @@ export const handler: Handler = async (event) => {
       };
     } else {
       // Default Chat
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
       const chat = model.startChat({
         history: history || [],
         generationConfig: {
