@@ -1,4 +1,4 @@
-import { Landmark, Search, Moon } from 'lucide-react';
+import { Landmark, Search, Moon, Calendar } from 'lucide-react';
 
 interface TabNavigationProps {
   activeTab: 'colleges' | 'applicants' | 'chat';
@@ -47,6 +47,15 @@ export default function TabNavigation({ activeTab, onTabChange, searchTerm = '',
           </div>
         </div>
         <div className="flex items-center space-x-4">
+          <a
+            href="https://calendar.app.google/fHPZ9ocT5W62GVcQ7"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center space-x-2 px-4 py-1.5 text-xs font-mono bg-sage-600 text-white hover:bg-sage-700 transition-colors uppercase tracking-wider shadow-sm"
+          >
+            <Calendar className="w-3.5 h-3.5" />
+            <span>Book a Call</span>
+          </a>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
